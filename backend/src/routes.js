@@ -1,0 +1,39 @@
+const express = require('express');
+const authRoutes = require('./modules/auth/auth.routes');
+const leadRoutes = require('./modules/crm/lead.routes');
+const taskRoutes = require('./modules/crm/task.routes');
+const followupRoutes = require('./modules/crm/followup.routes');
+const chatRoutes = require('./modules/communication/chat.routes');
+const emailTemplateRoutes = require('./modules/communication/emailTemplate.routes');
+const smsTemplateRoutes = require('./modules/communication/smsTemplate.routes');
+const whatsappTemplateRoutes = require('./modules/communication/whatsappTemplate.routes');
+const billingRoutes = require('./modules/billing/billing.routes');
+const masterRoutes = require('./modules/master/master.routes');
+const tenantRoutes = require('./modules/tenant/tenant.routes');
+const roleRoutes = require('./modules/role/role.routes');
+const userRoutes = require('./modules/user/user.routes');
+
+const reportsRoutes = require('./modules/reports/reports.routes');
+const fileRoutes = require('./modules/file/file.routes');
+const aiProviderRoutes = require('./modules/ai-provider/ai-provider.routes');
+
+const router = express.Router();
+
+router.use('/auth', authRoutes);
+router.use('/crm/leads', leadRoutes);
+router.use('/crm/tasks', taskRoutes);
+router.use('/crm/followups', followupRoutes);
+router.use('/communication/chat', chatRoutes);
+router.use('/communication/email-templates', emailTemplateRoutes);
+router.use('/communication/sms-templates', smsTemplateRoutes);
+router.use('/communication/whatsapp-templates', whatsappTemplateRoutes);
+router.use('/billing', billingRoutes);
+router.use('/master', masterRoutes);
+router.use('/tenants', tenantRoutes);
+router.use('/roles', roleRoutes);
+router.use('/users', userRoutes);
+router.use('/reports', reportsRoutes);
+router.use('/files', fileRoutes);
+router.use('/ai-providers', aiProviderRoutes);
+
+module.exports = router;
