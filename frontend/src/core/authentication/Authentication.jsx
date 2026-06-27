@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 import { UniversalCRUDLayout } from '@/components/layout/UniversalCRUDLayout';
+import { Drawer } from '@/components/ui/Drawer';
 import { StatCard } from '@/components/ui/StatCard';
 import { MockChart } from '@/components/ui/MockChart';
 
 export function Authentication() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const data = [
   {
@@ -82,11 +84,12 @@ export function Authentication() {
   );
 
   return (
+    <>
     <UniversalCRUDLayout
       title="Authentication"
       description="Manage SSO providers, local login policies, and 2FA settings."
       toolbarActions={
-        <Button>
+        <Button onClick={() => setIsDrawerOpen(true)}>
           <Plus className="mr-2 h-4 w-4" /> Add New
         </Button>
       }
@@ -129,7 +132,7 @@ export function Authentication() {
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end space-x-2">
-                    <button className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors">
+                    <button onClick={() => setIsDrawerOpen(true)} className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors">
                       <Edit className="h-4 w-4" />
                     </button>
                     <button className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-red-500 dark:hover:bg-slate-800 transition-colors">
@@ -150,5 +153,36 @@ export function Authentication() {
   <StatCard title="2FA Enabled Users" value="38,102" icon="ShieldCheck" trend="+15%" color="purple" />
 </div>
     </UniversalCRUDLayout>
+      <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} title="Add/Edit Auth Provider">
+        <div className="space-y-4 mt-4">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Provider Type</label>
+            <select className="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700">
+              <option>Google Workspace</option>
+              <option>Microsoft Entra ID</option>
+              <option>GitHub OAuth</option>
+              <option>SAML 2.0</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Client ID / Issuer</label>
+            <input type="text" className="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" placeholder="Enter client ID" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Client Secret</label>
+            <input type="password" className="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" placeholder="••••••••••••••••" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Callback URL</label>
+            <input type="text" value="https://api.kiaancore.com/auth/callback" disabled className="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-slate-500 bg-slate-50 shadow-sm ring-1 ring-inset ring-slate-300 sm:text-sm sm:leading-6 dark:bg-slate-800 dark:text-slate-400 dark:ring-slate-700" />
+            <p className="mt-1 text-xs text-slate-500">Copy this URL to your provider's configuration.</p>
+          </div>
+          <div className="pt-4 flex justify-end space-x-2">
+            <Button variant="outline" onClick={() => setIsDrawerOpen(false)}>Cancel</Button>
+            <Button onClick={() => setIsDrawerOpen(false)}>Save Provider</Button>
+          </div>
+        </div>
+      </Drawer>
+    </>
   );
 }

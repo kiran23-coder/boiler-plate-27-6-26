@@ -5,6 +5,7 @@ import { UniversalCRUDLayout } from '@/components/layout/UniversalCRUDLayout';
 
 export function Webhooks() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const data = [
   {
@@ -92,7 +93,7 @@ export function Webhooks() {
       title="Webhooks"
       description="Manage event-driven HTTP callbacks."
       toolbarActions={
-        <Button>
+        <Button onClick={() => setIsDrawerOpen(true)}>
           <Plus className="mr-2 h-4 w-4" /> Add New
         </Button>
       }
@@ -136,7 +137,7 @@ export function Webhooks() {
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end space-x-2">
-                    <button className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors">
+                    <button onClick={() => setIsDrawerOpen(true)} className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors">
                       <Edit className="h-4 w-4" />
                     </button>
                     <button className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-red-500 dark:hover:bg-slate-800 transition-colors">
