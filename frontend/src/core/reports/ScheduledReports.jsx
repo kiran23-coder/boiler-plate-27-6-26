@@ -7,6 +7,7 @@ import { Modal } from '@/components/ui/Modal';
 
 export function ScheduledReports() {
   const [searchTerm, setSearchTerm] = useState("");
+<<<<<<< HEAD
   
   const [reports, setReports] = useState([
     { id: 1, c1: "Weekly Revenue Summary", c2: "Financial", c3: "Every Monday 9AM", c4: "finance@acme.com", c5: "Yesterday", c6: "Active" },
@@ -18,6 +19,9 @@ export function ScheduledReports() {
     { id: 7, c1: "Old Inactive Users", c2: "Growth", c3: "Every Month", c4: "growth@acme.com", c5: "Never", c6: "Paused" },
     { id: 8, c1: "API Usage Stats", c2: "Engineering", c3: "Every Sunday 11PM", c4: "api@acme.com", c5: "Last Sunday", c6: "Active" }
   ]);
+=======
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+>>>>>>> 7cbe9b095e3ac79adee145ea661bf0a1940d29c6
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingReport, setEditingReport] = useState(null);
@@ -71,7 +75,11 @@ export function ScheduledReports() {
       title="Scheduled Reports"
       description="Automated report generation and delivery."
       toolbarActions={
+<<<<<<< HEAD
         <Button onClick={() => handleOpenModal()}>
+=======
+        <Button onClick={() => setIsDrawerOpen(true)}>
+>>>>>>> 7cbe9b095e3ac79adee145ea661bf0a1940d29c6
           <Plus className="mr-2 h-4 w-4" /> Add New
         </Button>
       }
@@ -115,10 +123,14 @@ export function ScheduledReports() {
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end space-x-2">
+<<<<<<< HEAD
                     <button 
                       onClick={() => handleOpenModal(row)}
                       className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors"
                     >
+=======
+                    <button onClick={() => setIsDrawerOpen(true)} className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors">
+>>>>>>> 7cbe9b095e3ac79adee145ea661bf0a1940d29c6
                       <Edit className="h-4 w-4" />
                     </button>
                     <button 

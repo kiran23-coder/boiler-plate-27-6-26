@@ -6,6 +6,7 @@ import { Modal } from '@/components/ui/Modal';
 
 export function Webhooks() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const [hooks, setHooks] = useState([
     { id: 1, c1: "https://api.acme.com/hook", c2: "user.created, payment.*", c3: "Production", c4: "100%", c5: "Just now", c6: "Active" },
@@ -70,7 +71,11 @@ export function Webhooks() {
       title="Webhooks"
       description="Manage event-driven HTTP callbacks."
       toolbarActions={
+<<<<<<< HEAD
         <Button onClick={() => handleOpenModal()}>
+=======
+        <Button onClick={() => setIsDrawerOpen(true)}>
+>>>>>>> 7cbe9b095e3ac79adee145ea661bf0a1940d29c6
           <Plus className="mr-2 h-4 w-4" /> Add New
         </Button>
       }
@@ -114,10 +119,14 @@ export function Webhooks() {
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end space-x-2">
+<<<<<<< HEAD
                     <button 
                       onClick={() => handleOpenModal(row)}
                       className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors"
                     >
+=======
+                    <button onClick={() => setIsDrawerOpen(true)} className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors">
+>>>>>>> 7cbe9b095e3ac79adee145ea661bf0a1940d29c6
                       <Edit className="h-4 w-4" />
                     </button>
                     <button 

@@ -7,6 +7,7 @@ import { Modal } from '@/components/ui/Modal';
 
 export function AuditLogs() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const [logs, setLogs] = useState([
     { id: 1, c1: "evt_101", c2: "user.created", c3: "alice@acme.com", c4: "usr_501", c5: "192.168.1.1", c6: "2 mins ago" },
@@ -71,7 +72,11 @@ export function AuditLogs() {
       title="Audit Logs"
       description="Immutable record of system-wide changes."
       toolbarActions={
+<<<<<<< HEAD
         <Button onClick={() => handleOpenModal()}>
+=======
+        <Button onClick={() => setIsDrawerOpen(true)}>
+>>>>>>> 7cbe9b095e3ac79adee145ea661bf0a1940d29c6
           <Plus className="mr-2 h-4 w-4" /> Add New
         </Button>
       }
@@ -115,10 +120,14 @@ export function AuditLogs() {
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end space-x-2">
+<<<<<<< HEAD
                     <button 
                       onClick={() => handleOpenModal(row)}
                       className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors"
                     >
+=======
+                    <button onClick={() => setIsDrawerOpen(true)} className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors">
+>>>>>>> 7cbe9b095e3ac79adee145ea661bf0a1940d29c6
                       <Edit className="h-4 w-4" />
                     </button>
                     <button 

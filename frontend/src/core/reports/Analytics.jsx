@@ -1,10 +1,12 @@
 import React from 'react';
 import { UniversalCRUDLayout } from '@/components/layout/UniversalCRUDLayout';
+import { Drawer } from '@/components/ui/Drawer';
 import { StatCard } from '@/components/ui/StatCard';
 import { MockChart } from '@/components/ui/MockChart';
 
 export function Analytics() {
   return (
+    <>
     <UniversalCRUDLayout
       title="Platform Analytics"
       description="High-level metrics and usage trends."
@@ -38,5 +40,29 @@ export function Analytics() {
   </div>
 </div>
     </UniversalCRUDLayout>
+      <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} title="Add/Edit Platform Analytics">
+        <div className="space-y-4 mt-4">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Name</label>
+            <input type="text" className="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" placeholder="Enter name..." />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Description</label>
+            <textarea className="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" rows="3" placeholder="Enter details..."></textarea>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Status</label>
+            <select className="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700">
+              <option>Active</option>
+              <option>Inactive</option>
+            </select>
+          </div>
+          <div className="pt-4 flex justify-end space-x-2">
+            <Button variant="outline" onClick={() => setIsDrawerOpen(false)}>Cancel</Button>
+            <Button onClick={() => setIsDrawerOpen(false)}>Save Changes</Button>
+          </div>
+        </div>
+      </Drawer>
+    </>
   );
 }
