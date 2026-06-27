@@ -3,87 +3,64 @@ import { Button } from '@/components/ui/Button';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 import { UniversalCRUDLayout } from '@/components/layout/UniversalCRUDLayout';
 import { StatCard } from '@/components/ui/StatCard';
-import { MockChart } from '@/components/ui/MockChart';
+import { Modal } from '@/components/ui/Modal';
 
 export function AuditLogs() {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const data = [
-  {
-    "id": 1,
-    "c1": "evt_101",
-    "c2": "user.created",
-    "c3": "alice@acme.com",
-    "c4": "usr_501",
-    "c5": "192.168.1.1",
-    "c6": "2 mins ago"
-  },
-  {
-    "id": 2,
-    "c1": "evt_102",
-    "c2": "role.updated",
-    "c3": "admin@system",
-    "c4": "rol_99",
-    "c5": "10.0.0.1",
-    "c6": "15 mins ago"
-  },
-  {
-    "id": 3,
-    "c1": "evt_103",
-    "c2": "setting.changed",
-    "c3": "bob@stark.com",
-    "c4": "set_auth",
-    "c5": "172.16.0.4",
-    "c6": "1 hour ago"
-  },
-  {
-    "id": 4,
-    "c1": "evt_104",
-    "c2": "api_key.deleted",
-    "c3": "charlie@wayne",
-    "c4": "key_404",
-    "c5": "192.168.2.10",
-    "c6": "2 hours ago"
-  },
-  {
-    "id": 5,
-    "c1": "evt_105",
-    "c2": "tenant.suspended",
-    "c3": "system",
-    "c4": "tnt_105",
-    "c5": "127.0.0.1",
-    "c6": "Yesterday"
-  },
-  {
-    "id": 6,
-    "c1": "evt_106",
-    "c2": "invoice.paid",
-    "c3": "stripe_webhook",
-    "c4": "inv_2026",
-    "c5": "3.3.3.3",
-    "c6": "Yesterday"
-  },
-  {
-    "id": 7,
-    "c1": "evt_107",
-    "c2": "user.deleted",
-    "c3": "diana@them.gov",
-    "c4": "usr_802",
-    "c5": "10.1.1.20",
-    "c6": "2 days ago"
-  },
-  {
-    "id": 8,
-    "c1": "evt_108",
-    "c2": "login.failed",
-    "c3": "unknown",
-    "c4": "usr_admin",
-    "c5": "45.22.11.9",
-    "c6": "2 days ago"
-  }
-];
+  const [logs, setLogs] = useState([
+    { id: 1, c1: "evt_101", c2: "user.created", c3: "alice@acme.com", c4: "usr_501", c5: "192.168.1.1", c6: "2 mins ago" },
+    { id: 2, c1: "evt_102", c2: "role.updated", c3: "admin@system", c4: "rol_99", c5: "10.0.0.1", c6: "15 mins ago" },
+    { id: 3, c1: "evt_103", c2: "setting.changed", c3: "bob@stark.com", c4: "set_auth", c5: "172.16.0.4", c6: "1 hour ago" },
+    { id: 4, c1: "evt_104", c2: "api_key.deleted", c3: "charlie@wayne", c4: "key_404", c5: "192.168.2.10", c6: "2 hours ago" },
+    { id: 5, c1: "evt_105", c2: "tenant.suspended", c3: "system", c4: "tnt_105", c5: "127.0.0.1", c6: "Yesterday" },
+    { id: 6, c1: "evt_106", c2: "invoice.paid", c3: "stripe_webhook", c4: "inv_2026", c5: "3.3.3.3", c6: "Yesterday" },
+    { id: 7, c1: "evt_107", c2: "user.deleted", c3: "diana@them.gov", c4: "usr_802", c5: "10.1.1.20", c6: "2 days ago" },
+    { id: 8, c1: "evt_108", c2: "login.failed", c3: "unknown", c4: "usr_admin", c5: "45.22.11.9", c6: "2 days ago" }
+  ]);
 
-  const filteredData = data.filter(item => 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingLog, setEditingLog] = useState(null);
+  
+  const [formData, setFormData] = useState({
+    c1: '', c2: '', c3: '', c4: '', c5: '', c6: 'Just now'
+  });
+
+  const handleOpenModal = (logItem = null) => {
+    if (logItem) {
+      setEditingLog(logItem);
+      setFormData(logItem);
+    } else {
+      setEditingLog(null);
+      setFormData({ c1: `evt_${Date.now().toString().slice(-3)}`, c2: '', c3: '', c4: '', c5: '', c6: 'Just now' });
+    }
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditingLog(null);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSave = () => {
+    if (editingLog) {
+      setLogs(logs.map(l => l.id === editingLog.id ? { ...formData, id: l.id } : l));
+    } else {
+      setLogs([{ ...formData, id: Date.now() }, ...logs]);
+    }
+    handleCloseModal();
+  };
+
+  const handleDelete = (id) => {
+    setLogs(logs.filter(l => l.id !== id));
+  };
+
+  const filteredData = logs.filter(item => 
     Object.values(item).some(val => 
       String(val).toLowerCase().includes(searchTerm.toLowerCase())
     )
@@ -94,7 +71,7 @@ export function AuditLogs() {
       title="Audit Logs"
       description="Immutable record of system-wide changes."
       toolbarActions={
-        <Button>
+        <Button onClick={() => handleOpenModal()}>
           <Plus className="mr-2 h-4 w-4" /> Add New
         </Button>
       }
@@ -138,10 +115,16 @@ export function AuditLogs() {
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end space-x-2">
-                    <button className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors">
+                    <button 
+                      onClick={() => handleOpenModal(row)}
+                      className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors"
+                    >
                       <Edit className="h-4 w-4" />
                     </button>
-                    <button className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-red-500 dark:hover:bg-slate-800 transition-colors">
+                    <button 
+                      onClick={() => handleDelete(row.id)}
+                      className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-red-500 dark:hover:bg-slate-800 transition-colors"
+                    >
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
@@ -153,11 +136,80 @@ export function AuditLogs() {
       }
     >
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
-  <StatCard title="Total Events" value="1.2M" icon="Activity" trend="+45k" color="blue" />
-  <StatCard title="Critical Events" value="12" icon="AlertTriangle" trend="-2" color="orange" />
-  <StatCard title="Security Alerts" value="4" icon="ShieldAlert" trend="0" color="red" />
-  <StatCard title="Storage Used" value="4.5 GB" icon="Database" trend="+120 MB" color="purple" />
-</div>
+        <StatCard title="Total Events" value="1.2M" icon="Activity" trend="+45k" color="blue" />
+        <StatCard title="Critical Events" value="12" icon="AlertTriangle" trend="-2" color="orange" />
+        <StatCard title="Security Alerts" value="4" icon="ShieldAlert" trend="0" color="red" />
+        <StatCard title="Storage Used" value="4.5 GB" icon="Database" trend="+120 MB" color="purple" />
+      </div>
+
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal} title={editingLog ? "Edit Audit Log" : "Add New Audit Log"}>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Event ID</label>
+            <input 
+              name="c1"
+              value={formData.c1}
+              onChange={handleChange}
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              placeholder="e.g. evt_101"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Action</label>
+            <input 
+              name="c2"
+              value={formData.c2}
+              onChange={handleChange}
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              placeholder="e.g. user.created"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Actor</label>
+            <input 
+              name="c3"
+              value={formData.c3}
+              onChange={handleChange}
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              placeholder="e.g. alice@acme.com"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Resource</label>
+            <input 
+              name="c4"
+              value={formData.c4}
+              onChange={handleChange}
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              placeholder="e.g. usr_501"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">IP Address</label>
+            <input 
+              name="c5"
+              value={formData.c5}
+              onChange={handleChange}
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              placeholder="e.g. 192.168.1.1"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Timestamp</label>
+            <input 
+              name="c6"
+              value={formData.c6}
+              onChange={handleChange}
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              placeholder="e.g. Just now"
+            />
+          </div>
+          <div className="flex justify-end space-x-2 pt-4">
+            <Button variant="outline" onClick={handleCloseModal}>Cancel</Button>
+            <Button onClick={handleSave}>Save</Button>
+          </div>
+        </div>
+      </Modal>
     </UniversalCRUDLayout>
   );
 }

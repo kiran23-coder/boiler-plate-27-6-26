@@ -3,87 +3,64 @@ import { Button } from '@/components/ui/Button';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 import { UniversalCRUDLayout } from '@/components/layout/UniversalCRUDLayout';
 import { StatCard } from '@/components/ui/StatCard';
-import { MockChart } from '@/components/ui/MockChart';
+import { Modal } from '@/components/ui/Modal';
 
 export function SuperAdminDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const data = [
-  {
-    "id": 1,
-    "c1": "tnt_101",
-    "c2": "Acme Corp",
-    "c3": "Enterprise",
-    "c4": "$4,990",
-    "c5": "Good",
-    "c6": "Active"
-  },
-  {
-    "id": 2,
-    "c1": "tnt_102",
-    "c2": "Stark Ind.",
-    "c3": "Enterprise",
-    "c4": "$9,990",
-    "c5": "Good",
-    "c6": "Active"
-  },
-  {
-    "id": 3,
-    "c1": "tnt_103",
-    "c2": "Wayne Ent.",
-    "c3": "Pro",
-    "c4": "$990",
-    "c5": "Warning",
-    "c6": "Active"
-  },
-  {
-    "id": 4,
-    "c1": "tnt_104",
-    "c2": "Umbrella Corp",
-    "c3": "Enterprise",
-    "c4": "$15,000",
-    "c5": "Critical",
-    "c6": "Suspended"
-  },
-  {
-    "id": 5,
-    "c1": "tnt_105",
-    "c2": "Small Biz",
-    "c3": "Startup",
-    "c4": "$49",
-    "c5": "Good",
-    "c6": "Active"
-  },
-  {
-    "id": 6,
-    "c1": "tnt_106",
-    "c2": "Cyberdyne",
-    "c3": "Pro",
-    "c4": "$990",
-    "c5": "Good",
-    "c6": "Active"
-  },
-  {
-    "id": 7,
-    "c1": "tnt_107",
-    "c2": "Initech",
-    "c3": "Startup",
-    "c4": "$49",
-    "c5": "Good",
-    "c6": "Active"
-  },
-  {
-    "id": 8,
-    "c1": "tnt_108",
-    "c2": "Massive Dynamic",
-    "c3": "Enterprise",
-    "c4": "$4,990",
-    "c5": "Good",
-    "c6": "Active"
-  }
-];
+  const [tenants, setTenants] = useState([
+    { id: 1, c1: "tnt_101", c2: "Acme Corp", c3: "Enterprise", c4: "$4,990", c5: "Good", c6: "Active" },
+    { id: 2, c1: "tnt_102", c2: "Stark Ind.", c3: "Enterprise", c4: "$9,990", c5: "Good", c6: "Active" },
+    { id: 3, c1: "tnt_103", c2: "Wayne Ent.", c3: "Pro", c4: "$990", c5: "Warning", c6: "Active" },
+    { id: 4, c1: "tnt_104", c2: "Umbrella Corp", c3: "Enterprise", c4: "$15,000", c5: "Critical", c6: "Suspended" },
+    { id: 5, c1: "tnt_105", c2: "Small Biz", c3: "Startup", c4: "$49", c5: "Good", c6: "Active" },
+    { id: 6, c1: "tnt_106", c2: "Cyberdyne", c3: "Pro", c4: "$990", c5: "Good", c6: "Active" },
+    { id: 7, c1: "tnt_107", c2: "Initech", c3: "Startup", c4: "$49", c5: "Good", c6: "Active" },
+    { id: 8, c1: "tnt_108", c2: "Massive Dynamic", c3: "Enterprise", c4: "$4,990", c5: "Good", c6: "Active" }
+  ]);
 
-  const filteredData = data.filter(item => 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingTenant, setEditingTenant] = useState(null);
+  
+  const [formData, setFormData] = useState({
+    c1: '', c2: '', c3: 'Startup', c4: '', c5: 'Good', c6: 'Active'
+  });
+
+  const handleOpenModal = (tenantItem = null) => {
+    if (tenantItem) {
+      setEditingTenant(tenantItem);
+      setFormData(tenantItem);
+    } else {
+      setEditingTenant(null);
+      setFormData({ c1: `tnt_${Date.now().toString().slice(-3)}`, c2: '', c3: 'Startup', c4: '', c5: 'Good', c6: 'Active' });
+    }
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditingTenant(null);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSave = () => {
+    if (editingTenant) {
+      setTenants(tenants.map(t => t.id === editingTenant.id ? { ...formData, id: t.id } : t));
+    } else {
+      setTenants([{ ...formData, id: Date.now() }, ...tenants]);
+    }
+    handleCloseModal();
+  };
+
+  const handleDelete = (id) => {
+    setTenants(tenants.filter(t => t.id !== id));
+  };
+
+  const filteredData = tenants.filter(item => 
     Object.values(item).some(val => 
       String(val).toLowerCase().includes(searchTerm.toLowerCase())
     )
@@ -94,7 +71,7 @@ export function SuperAdminDashboard() {
       title="Super Admin Dashboard"
       description="Global control center for the entire SaaS platform."
       toolbarActions={
-        <Button>
+        <Button onClick={() => handleOpenModal()}>
           <Plus className="mr-2 h-4 w-4" /> Add New
         </Button>
       }
@@ -138,10 +115,16 @@ export function SuperAdminDashboard() {
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end space-x-2">
-                    <button className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors">
+                    <button 
+                      onClick={() => handleOpenModal(row)}
+                      className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors"
+                    >
                       <Edit className="h-4 w-4" />
                     </button>
-                    <button className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-red-500 dark:hover:bg-slate-800 transition-colors">
+                    <button 
+                      onClick={() => handleDelete(row.id)}
+                      className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-red-500 dark:hover:bg-slate-800 transition-colors"
+                    >
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
@@ -153,13 +136,90 @@ export function SuperAdminDashboard() {
       }
     >
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
-  <StatCard title="Total Tenants" value="452" icon="Database" trend="+12" color="blue" />
-  <StatCard title="Total Revenue (MRR)" value="$1.2M" icon="DollarSign" trend="+15%" color="green" />
-  <StatCard title="Active Subscriptions" value="12,450" icon="CreditCard" trend="+450" color="purple" />
-  <StatCard title="Open Support Tickets" value="45" icon="LifeBuoy" trend="-5" color="orange" />
-  <StatCard title="System Health" value="99.9%" icon="Activity" trend="Optimal" color="green" />
-  <StatCard title="Database Load" value="42%" icon="HardDrive" trend="Normal" color="blue" />
-</div>
+        <StatCard title="Total Tenants" value={tenants.length.toString()} icon="Database" trend="+12" color="blue" />
+        <StatCard title="Total Revenue (MRR)" value="$1.2M" icon="DollarSign" trend="+15%" color="green" />
+        <StatCard title="Active Subscriptions" value="12,450" icon="CreditCard" trend="+450" color="purple" />
+        <StatCard title="Open Support Tickets" value="45" icon="LifeBuoy" trend="-5" color="orange" />
+        <StatCard title="System Health" value="99.9%" icon="Activity" trend="Optimal" color="green" />
+        <StatCard title="Database Load" value="42%" icon="HardDrive" trend="Normal" color="blue" />
+      </div>
+
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal} title={editingTenant ? "Edit Tenant" : "Add New Tenant"}>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Tenant ID</label>
+            <input 
+              name="c1"
+              value={formData.c1}
+              onChange={handleChange}
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              placeholder="e.g. tnt_101"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Name</label>
+            <input 
+              name="c2"
+              value={formData.c2}
+              onChange={handleChange}
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              placeholder="e.g. Acme Corp"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Plan</label>
+            <select 
+              name="c3"
+              value={formData.c3}
+              onChange={handleChange}
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+            >
+              <option value="Startup">Startup</option>
+              <option value="Pro">Pro</option>
+              <option value="Enterprise">Enterprise</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">MRR</label>
+            <input 
+              name="c4"
+              value={formData.c4}
+              onChange={handleChange}
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              placeholder="e.g. $49"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Health</label>
+            <select 
+              name="c5"
+              value={formData.c5}
+              onChange={handleChange}
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+            >
+              <option value="Good">Good</option>
+              <option value="Warning">Warning</option>
+              <option value="Critical">Critical</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Status</label>
+            <select 
+              name="c6"
+              value={formData.c6}
+              onChange={handleChange}
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+            >
+              <option value="Active">Active</option>
+              <option value="Suspended">Suspended</option>
+            </select>
+          </div>
+          <div className="flex justify-end space-x-2 pt-4">
+            <Button variant="outline" onClick={handleCloseModal}>Cancel</Button>
+            <Button onClick={handleSave}>Save</Button>
+          </div>
+        </div>
+      </Modal>
     </UniversalCRUDLayout>
   );
 }

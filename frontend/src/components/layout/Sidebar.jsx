@@ -89,8 +89,6 @@ const navigation = [
       { name: 'Report Builder', href: '/reports/builder' },
     ]
   },
-  { name: 'Dashboard Builder', href: '/builders/dashboard', icon: Component },
-  { name: 'Form Builder', href: '/builders/form', icon: Component },
   { 
     name: 'API', icon: Database,
     children: [
@@ -104,15 +102,13 @@ const navigation = [
     name: 'System', icon: Settings,
     children: [
       { name: 'Audit', href: '/system/audit' },
-      { name: 'Activity', href: '/system/activity' },
-      { name: 'Monitoring', href: '/system/monitoring' },
     ]
   },
   { name: 'Super Admin', href: '/superadmin', icon: ShieldCheck },
 ]
 
 const rolePermissions = {
-  'Super Admin': ['Dashboard', 'Identity', 'Organization', 'Access Control', 'Multi Tenant', 'Subscription', 'Notifications', 'Storage', 'AI Platform', 'Workflow', 'Reports', 'Dashboard Builder', 'Form Builder', 'API', 'Settings', 'Analytics', 'System', 'Super Admin'],
+  'Super Admin': ['Dashboard', 'Identity', 'Organization', 'Access Control', 'Multi Tenant', 'Subscription', 'Notifications', 'Storage', 'AI Platform', 'Workflow', 'Reports', 'API', 'Settings', 'Analytics', 'System', 'Super Admin'],
   'Sales Agent': ['Dashboard', 'Settings'],
   'Support Staff': ['Dashboard', 'Storage', 'Settings']
 }

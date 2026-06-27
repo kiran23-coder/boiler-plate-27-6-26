@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
-import { Bell, Search, UserCircle, ChevronDown, Plus, LogOut, Settings, User, Menu } from "lucide-react"
+import { Bell, Search, UserCircle, ChevronDown, Plus, LogOut, Settings, User, Menu, Globe } from "lucide-react"
 import { Dropdown, DropdownItem } from "@/components/ui/Dropdown"
 import { Button } from "@/components/ui/Button"
 import { NotificationDrawer } from "./NotificationDrawer"
@@ -80,6 +80,20 @@ export function Header({ setMobileMenuOpen }) {
             <DropdownItem onClick={() => navigate('/users')}>Create User</DropdownItem>
             <DropdownItem onClick={() => navigate('/roles/permissions')}>Create Role</DropdownItem>
             <DropdownItem onClick={() => navigate('/crm/pipeline')}>Create Deal</DropdownItem>
+          </Dropdown>
+
+          <Dropdown
+            trigger={
+              <button className="flex items-center space-x-1 rounded-md px-2 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors">
+                <Globe className="h-4 w-4 mr-1" />
+                <span className="hidden sm:inline-block">EN</span>
+                <ChevronDown className="h-3 w-3 opacity-50" />
+              </button>
+            }
+          >
+            <DropdownItem>English</DropdownItem>
+            <DropdownItem>Hindi (हिंदी)</DropdownItem>
+            <DropdownItem>Arabic (العربية)</DropdownItem>
           </Dropdown>
 
           <button 
