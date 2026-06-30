@@ -10,7 +10,7 @@ export function Devices() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const data = [
+  const [data, setData] = useState([
   {
     "id": 1,
     "c1": "Alice MacBook Pro",
@@ -99,7 +99,40 @@ export function Devices() {
     "c7": "Yesterday",
     "c8": "Trusted"
   }
-];
+]);
+
+  
+  const [editingId, setEditingId] = useState(null);
+  const [formData, setFormData] = useState({ c1: '', c2: '', c3: '', c4: '', c5: '', c6: '', c7: '', c8: '' });
+
+  const handleOpenDrawer = (row = null) => {
+    if (row) {
+      setEditingId(row.id);
+      setFormData(row);
+    } else {
+      setEditingId(null);
+      setFormData({ c1: '', c2: '', c3: '', c4: '', c5: '', c6: '', c7: '', c8: '' });
+    }
+    setIsDrawerOpen(true);
+  };
+
+  const handleSave = () => {
+    if (editingId) {
+      setData(data.map(d => d.id === editingId ? { ...formData, id: editingId } : d));
+    } else {
+      setData([{ ...formData, id: Date.now() }, ...data]);
+    }
+    setIsDrawerOpen(false);
+  };
+
+  const handleDelete = (id) => {
+    setData(data.filter(d => d.id !== id));
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
   const filteredData = data.filter(item => 
     Object.values(item).some(val => 
@@ -113,7 +146,7 @@ export function Devices() {
       title="Registered Devices"
       description="Manage trusted devices for users."
       toolbarActions={
-        <Button onClick={() => setIsDrawerOpen(true)}>
+        <Button onClick={() => handleOpenDrawer()}>
           <Plus className="mr-2 h-4 w-4" /> Add New
         </Button>
       }
@@ -125,7 +158,7 @@ export function Devices() {
       hasData={filteredData.length > 0}
       table={
         <table className="w-full whitespace-nowrap text-left text-sm">
-          <thead className="bg-slate-50 dark:bg-slate-900/50">
+          <thead className="bg-slate-50 dark:bg-slate-900/50 dark:text-white text-slate-900">
             <tr>
               <th className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">Device Name</th>
               <th className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">Owner</th>
@@ -159,10 +192,10 @@ export function Devices() {
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end space-x-2">
-                    <button onClick={() => setIsDrawerOpen(true)} className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors">
+                    <button onClick={() => handleOpenDrawer(row)} className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors">
                       <Edit className="h-4 w-4" />
                     </button>
-                    <button className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-red-500 dark:hover:bg-slate-800 transition-colors">
+                    <button onClick={() => handleDelete(row.id)} className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-red-500 dark:hover:bg-slate-800 transition-colors">
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
@@ -174,32 +207,72 @@ export function Devices() {
       }
     >
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
-  <StatCard title="Registered Devices" value="62,104" icon="Laptop" trend="+450" color="primary" />
-  <StatCard title="Trusted Devices" value="45,002" icon="ShieldCheck" trend="+300" color="green" />
-  <StatCard title="Blocked Devices" value="1,204" icon="ShieldAlert" trend="+12" color="red" />
-  <StatCard title="Unknown Devices" value="432" icon="HelpCircle" trend="-50" color="orange" />
-</div>
+        <StatCard title="Registered Devices" value={data.length.toString()} icon="Laptop" trend={`across ${data.length} users`} color="primary" />
+        <StatCard title="Trusted Devices" value={data.filter(d => d.c8 === 'Trusted').length.toString()} icon="ShieldCheck" trend="secured" color="green" />
+        <StatCard title="Blocked Devices" value={data.filter(d => d.c8 === 'Blocked').length.toString()} icon="ShieldAlert" trend="requires action" color="red" />
+        <StatCard title="Unknown Devices" value={data.filter(d => d.c8 === 'Pending').length.toString()} icon="HelpCircle" trend="awaiting review" color="orange" />
+      </div>
     </UniversalCRUDLayout>
-      <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} title="Add/Edit Registered Devices">
+      <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} title={editingId ? "Edit Record" : "Add Record"}>
         <div className="space-y-4 mt-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Name</label>
-            <input type="text" className="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" placeholder="Enter name..." />
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Device Name</label>
+            <select name="c1" value={formData.c1} onChange={handleChange} className="block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700">
+              <option value="">Select Device...</option>
+              <option value="MacBook Pro">MacBook Pro</option>
+              <option value="ThinkPad">ThinkPad</option>
+              <option value="Surface Pro">Surface Pro</option>
+              <option value="iPhone 15">iPhone 15</option>
+              <option value="iPad Pro">iPad Pro</option>
+              <option value="Pixel 8">Pixel 8</option>
+            </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Description</label>
-            <textarea className="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" rows="3" placeholder="Enter details..."></textarea>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Owner</label>
+            <select name="c2" value={formData.c2} onChange={handleChange} className="block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700">
+              <option value="">Select Owner...</option>
+              <option value="Alice Freeman">Alice Freeman</option>
+              <option value="Bob Smith">Bob Smith</option>
+              <option value="Charlie Davis">Charlie Davis</option>
+              <option value="Diana Prince">Diana Prince</option>
+              <option value="Evan Wright">Evan Wright</option>
+              <option value="Fiona Gallagher">Fiona Gallagher</option>
+              <option value="George Miller">George Miller</option>
+              <option value="Hannah Abbott">Hannah Abbott</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Browser</label>
+            <input name="c3" value={formData.c3} onChange={handleChange} type="text" className="block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" placeholder="Enter Browser..." />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Status</label>
-            <select className="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700">
-              <option>Active</option>
-              <option>Inactive</option>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Operating System</label>
+            <input name="c4" value={formData.c4} onChange={handleChange} type="text" className="block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" placeholder="Enter Operating System..." />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">IP</label>
+            <input name="c5" value={formData.c5} onChange={handleChange} type="text" className="block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" placeholder="Enter IP..." />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Location</label>
+            <input name="c6" value={formData.c6} onChange={handleChange} type="text" className="block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" placeholder="Enter Location..." />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Last Login</label>
+            <input name="c7" value={formData.c7} onChange={handleChange} type="text" className="block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" placeholder="Enter Last Login..." />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Status</label>
+            <select name="c8" value={formData.c8} onChange={handleChange} className="block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700">
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+              <option value="Suspended">Suspended</option>
             </select>
           </div>
           <div className="pt-4 flex justify-end space-x-2">
             <Button variant="outline" onClick={() => setIsDrawerOpen(false)}>Cancel</Button>
-            <Button onClick={() => setIsDrawerOpen(false)}>Save Changes</Button>
+            <Button onClick={handleSave}>Save Changes</Button>
           </div>
         </div>
       </Drawer>

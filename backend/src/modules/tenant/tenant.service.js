@@ -1,7 +1,6 @@
 const prisma = require('../../config/db');
 
 exports.getAllTenants = async () => {
-  // In a real app, verify Super Admin here. For demo, we return all.
   return await prisma.tenant.findMany({
     orderBy: { createdAt: 'desc' }
   });
@@ -10,15 +9,14 @@ exports.getAllTenants = async () => {
 exports.createTenant = async (data) => {
   return await prisma.tenant.create({
     data: {
-      name: data.name,
-      industry: data.industry,
-      employees: data.employees,
-      country: data.country,
-      state: data.state,
-      city: data.city,
-      tags: data.tags,
-      category: data.category,
-      status: data.status || 'ACTIVE'
+      organization: data.organization || 'Unknown',
+      owner: data.owner || null,
+      totalUsers: data.totalUsers || '0',
+      branchesCount: data.branchesCount || '0',
+      plan: data.plan || 'Free',
+      databaseSize: data.databaseSize || '0 GB',
+      status: data.status || 'Active',
+      createdDate: data.createdDate || new Date().toISOString()
     }
   });
 };
@@ -30,15 +28,14 @@ exports.updateTenant = async (id, data) => {
   return await prisma.tenant.update({
     where: { id },
     data: {
-      name: data.name,
-      industry: data.industry,
-      employees: data.employees,
-      country: data.country,
-      state: data.state,
-      city: data.city,
-      tags: data.tags,
-      category: data.category,
-      status: data.status
+      organization: data.organization,
+      owner: data.owner,
+      totalUsers: data.totalUsers,
+      branchesCount: data.branchesCount,
+      plan: data.plan,
+      databaseSize: data.databaseSize,
+      status: data.status,
+      createdDate: data.createdDate
     }
   });
 };

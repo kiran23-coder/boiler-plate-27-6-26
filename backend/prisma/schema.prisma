@@ -7,600 +7,444 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ==========================================
-// Core Entities
-// ==========================================
-
+// ----------------------------------
+// Core Tenant / Company
+// ----------------------------------
 model Tenant {
   id             String    @id @default(uuid())
-  name           String
-  domain         String?   @unique
-  status         String    @default("ACTIVE") // ACTIVE, SUSPENDED, CANCELLED
-  subscriptionId String?
-  
-  industry       String?
-  employees      String?
-  country        String?
-  state          String?
-  city           String?
-  tags           String?
-  category       String?
+  organization   String
+  owner          String?
+  totalUsers     String?
+  branchesCount  String?
+  status         String    @default("Active")
+  createdDate    String?
+  plan           String?
+  databaseSize   String?
+  domain         String?
+  provider       String?
+  sslStatus      String?
   
   users          User[]
   branches       Branch[]
-  roles          Role[]
-  leads          Lead[]
-  tasks          Task[]
-  subscriptions  Subscription[]
-  files          File[]
-  auditLogs      AuditLog[]
-  followUps      FollowUp[]
-  messages       Message[]
-  emailTemplates EmailTemplate[]
-  smsTemplates   SmsTemplate[]
-  whatsappTemplates WhatsappTemplate[]
-  aiProviders    AIProvider[]
-  
-  invoices       Invoice[]
-  transactions   Transaction[]
-  coupons        Coupon[]
-  usageMetrics   UsageMetric[]
+  departments    Department[]
+  teams          Team[]
 
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
-  deletedAt      DateTime?
 }
 
+// ----------------------------------
+// Organization Structure
+// ----------------------------------
 model Branch {
-  id        String    @id @default(uuid())
-  tenantId  String
-  tenant    Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  
-  name      String
-  address   String?
-  
-  users     User[]
-  
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-
-  @@index([tenantId])
-}
-
-// ==========================================
-// Authentication & RBAC
-// ==========================================
-
-model User {
-  id             String    @id @default(uuid())
-  tenantId       String
-  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  
-  branchId       String?
-  branch         Branch?   @relation(fields: [branchId], references: [id], onDelete: SetNull)
-  
-  email          String    
-  passwordHash   String
-  firstName      String
-  lastName       String?
-  phone          String?
-  
-  department     String?
-  team           String?
-  
-  roleId         String?
-  role           Role?     @relation(fields: [roleId], references: [id], onDelete: SetNull)
-  
-  is2FAEnabled   Boolean   @default(false)
-  twoFactorSecret String?
-  
-  status         String    @default("ACTIVE")
-  
-  auditLogs        AuditLog[]
-  sentMessages     Message[] @relation("SentMessages")
-  receivedMessages Message[] @relation("ReceivedMessages")
-
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  deletedAt      DateTime?
-
-  @@unique([tenantId, email]) // Same email can exist in different tenants (optional, but good for multi-tenant isolation)
-  @@index([tenantId])
-  @@index([roleId])
-}
-
-model Role {
-  id          String    @id @default(uuid())
-  tenantId    String?   // If null, it's a global/system role
-  tenant      Tenant?   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  
-  name        String
-  description String?
-  isSystem    Boolean   @default(false)
-  
-  users       User[]
-  permissions RolePermission[]
-
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@index([tenantId])
-}
-
-model Permission {
-  id          String    @id @default(uuid())
-  resource    String    // e.g., 'users', 'leads', 'billing'
-  action      String    // e.g., 'create', 'read', 'update', 'delete'
-  
-  roles       RolePermission[]
-
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@unique([resource, action])
-}
-
-model RolePermission {
-  roleId       String
-  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  
-  permissionId String
-  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
-
-  assignedAt   DateTime   @default(now())
-
-  @@id([roleId, permissionId])
-}
-
-// ==========================================
-// Billing & Subscriptions
-// ==========================================
-
-model Plan {
-  id          String    @id @default(uuid())
-  name        String
-  price       Decimal   @db.Decimal(10, 2)
-  interval    String    // MONTHLY, YEARLY
-  features    Json      // JSON object storing limits (e.g. { maxUsers: 10, maxStorageGb: 5 })
-  
-  subscriptions Subscription[]
-  invoices      Invoice[]
-
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-}
-
-model Subscription {
-  id               String    @id @default(uuid())
-  tenantId         String
-  tenant           Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  
-  planId           String
-  plan             Plan      @relation(fields: [planId], references: [id])
-  
-  status           String    @default("TRIALING") // ACTIVE, CANCELED, PAST_DUE
-  currentPeriodEnd DateTime
-
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-
-  @@index([tenantId])
-}
-
-// ==========================================
-// CRM Module
-// ==========================================
-
-model Lead {
-  id          String    @id @default(uuid())
+  id          String   @id @default(uuid())
   tenantId    String
-  tenant      Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  
-  name        String
-  email       String?
-  phone       String?
-  companyName String?
-  source      String?   // e.g., 'Website', 'Referral'
-  owner       String?
-  dealAmount  Decimal?  @db.Decimal(10, 2)
-  status      String    @default("NEW") // NEW, CONTACTED, QUALIFIED, WON, LOST
-  
-  tasks       Task[]
-
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
-
-  @@index([tenantId])
-  @@index([status])
-}
-
-model Task {
-  id          String    @id @default(uuid())
-  tenantId    String
-  tenant      Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  
-  leadId      String?
-  lead        Lead?     @relation(fields: [leadId], references: [id], onDelete: SetNull)
-  
-  title       String
-  description String?   @db.Text
-  dueDate     DateTime?
-  assignedTo  String?
-  priority    String    @default("Medium") // High, Medium, Low
-  status      String    @default("Pending") // Pending, In Progress, Completed
-
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@index([tenantId])
-  @@index([leadId])
-}
-
-model FollowUp {
-  id          String    @id @default(uuid())
-  tenantId    String
-  tenant      Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  
-  title       String
-  leadName    String
-  company     String?
-  date        DateTime
-  type        String    @default("Call") // Call, Email, Meeting
-  status      String    @default("Pending") // Pending, Completed
-  owner       String?
-
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@index([tenantId])
-}
-
-model Message {
-  id             String   @id @default(uuid())
-  tenantId       String
-  tenant         Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-
-  senderId       String
-  sender         User     @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
-  
-  receiverId     String
-  receiver       User     @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
-  
-  content        String   @db.Text
-  isRead         Boolean  @default(false)
-  
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  @@index([tenantId])
-  @@index([senderId])
-  @@index([receiverId])
-}
-
-model EmailTemplate {
-  id             String   @id @default(uuid())
-  tenantId       String
-  tenant         Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  
-  name           String
-  subject        String
-  body           String   @db.Text
-  
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  @@index([tenantId])
-}
-
-model SmsTemplate {
-  id             String   @id @default(uuid())
-  tenantId       String
-  tenant         Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  
-  name           String
-  body           String   @db.Text
-  
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  @@index([tenantId])
-}
-
-model WhatsappTemplate {
-  id             String   @id @default(uuid())
-  tenantId       String
-  tenant         Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  
-  name           String
-  body           String   @db.Text
-  status         String   @default("pending") // approved, pending, rejected
-  
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  @@index([tenantId])
-}
-
-// ==========================================
-// Files & Storage
-// ==========================================
-
-model File {
-  id          String    @id @default(uuid())
-  tenantId    String
-  tenant      Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  
-  parentId    String?   // references another File.id if it's inside a folder
-  isFolder    Boolean   @default(false)
-  
-  name        String
-  url         String?   // null for folders
-  mimetype    String
-  size        Int       // in bytes
-  
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@index([tenantId])
-  @@index([parentId])
-}
-
-// ==========================================
-// Logs & Auditing
-// ==========================================
-
-model AuditLog {
-  id          String    @id @default(uuid())
-  tenantId    String
-  tenant      Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  
-  userId      String?
-  user        User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
-  
-  action      String    // e.g., 'LOGIN', 'CREATE_LEAD'
-  resource    String    // e.g., 'Auth', 'Lead'
-  ipAddress   String?
-  details     Json?     // Storing changes or extra info
-
-  createdAt   DateTime  @default(now())
-
-  @@index([tenantId])
-  @@index([userId])
-}
-
-// ==========================================
-// AI & Communications
-// ==========================================
-
-model AITemplate {
-  id          String    @id @default(uuid())
-  tenantId    String
-  name        String
-  model       String    // e.g., GPT-4, Claude 3
-  prompt      String    @db.Text
-  
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@index([tenantId])
-}
-
-model AIProvider {
-  id          String    @id @default(uuid())
-  tenantId    String
-  tenant      Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  
-  name        String
-  description String?
-  status      String    @default("Active") // Active, Inactive
-  tokens      String    @default("0")
-  logo        String?   @default("bg-indigo-500")
-  
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@index([tenantId])
-}
-
-model CommunicationTemplate {
-  id          String    @id @default(uuid())
-  tenantId    String
-  type        String    // EMAIL, SMS, WHATSAPP
-  name        String
-  body        String    @db.Text
-  metaStatus  String?   // For WhatsApp (e.g., PENDING, APPROVED)
-
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@index([tenantId])
-}
-
-// ==========================================
-// Master Data
-// ==========================================
-
-model Country {
-  id          String    @id @default(uuid())
-  code        String    @unique
-  name        String    @unique
-  currency    String?
-  status      String    @default("ACTIVE")
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-}
-
-model State {
-  id          String    @id @default(uuid())
-  code        String    @unique
-  name        String
-  country     String
-  status      String    @default("ACTIVE")
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-}
-
-model City {
-  id          String    @id @default(uuid())
-  name        String
-  state       String
-  country     String
-
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-}
-
-model Category {
-  id          String    @id @default(uuid())
-  tenantId    String
-  name        String
-  type        String    // e.g. Product, Service
-  items       Int       @default(0)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  @@index([tenantId])
-}
-
-model Tag {
-  id          String    @id @default(uuid())
-  tenantId    String
-  name        String
-  color       String    @default("#3b82f6")
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  @@index([tenantId])
-}
-
-model Unit {
-  id          String    @id @default(uuid())
-  tenantId    String
-  name        String
-  symbol      String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  @@index([tenantId])
-}
-
-model Tax {
-  id          String    @id @default(uuid())
-  tenantId    String
-  name        String
-  rate        String    // Stored as string to support "18%" format from UI
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  @@index([tenantId])
-}
-
-model Status {
-  id          String    @id @default(uuid())
-  tenantId    String
-  name        String
-  module      String    // e.g. Invoices, Tasks
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  @@index([tenantId])
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  branchName  String
+  organization String?
+  manager     String?
+  employees   String?
+  city        String?
+  status      String   @default("Active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Department {
-  id          String    @id @default(uuid())
-  tenantId    String
-  name        String
-  head        String?
-  employees   Int       @default(0)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  @@index([tenantId])
+  id               String   @id @default(uuid())
+  tenantId         String
+  tenant           Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  departmentName   String
+  organization     String?
+  headOfDepartment String?
+  employees        String?
+  budget           String?
+  status           String   @default("Active")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  
+  teams            Team[]
 }
 
 model Team {
-  id          String    @id @default(uuid())
+  id          String   @id @default(uuid())
   tenantId    String
-  name        String
-  department  String?
-  members     Int       @default(0)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  @@index([tenantId])
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  departmentId String?
+  department  Department? @relation(fields: [departmentId], references: [id])
+  teamName    String
+  lead        String?
+  members     String?
+  velocity    String?
+  status      String   @default("Active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
-// ==========================================
-// Billing Components
-// ==========================================
+// ----------------------------------
+// Users, Roles & Permissions
+// ----------------------------------
+model User {
+  id          String   @id @default(uuid())
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  name        String
+  email       String
+  role        String?
+  organization String?
+  status      String   @default("Active")
+  lastLogin   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Role {
+  id                String   @id @default(uuid())
+  tenantId          String?
+  roleName          String
+  type              String?
+  totalUsers        String?
+  permissionsGranted String?
+  createdBy         String?
+  status            String   @default("Active")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model Permission {
+  id          String   @id @default(uuid())
+  module      String
+  canView     String?
+  canCreate   String?
+  canUpdate   String?
+  canDelete   String?
+  canImport   String?
+  canExport   String?
+  canApprove  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ----------------------------------
+// AI Platform
+// ----------------------------------
+model AILog {
+  id            String   @id @default(uuid())
+  tenantId      String?
+  time          String
+  provider      String?
+  promptSnippet String?  @db.Text
+  tokensUsed    String?
+  createdAt     DateTime @default(now())
+}
+
+model AITemplate {
+  id            String   @id @default(uuid())
+  tenantId      String?
+  templateName  String
+  model         String?
+  promptSnippet String?  @db.Text
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model KnowledgeBase {
+  id            String   @id @default(uuid())
+  tenantId      String?
+  documentName  String
+  type          String?
+  tokens        String?
+  chunks        String?
+  status        String   @default("Active")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model AIProvider {
+  id          String   @id @default(uuid())
+  tenantId    String?
+  provider    String
+  model       String?
+  status      String   @default("Active")
+  requests    String?
+  tokens      String?
+  avgLatency  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ----------------------------------
+// System & APIs
+// ----------------------------------
+model APIKey {
+  id          String   @id @default(uuid())
+  tenantId    String?
+  keyName     String
+  prefix      String?
+  environment String?
+  permissions String?
+  lastUsed    String?
+  status      String   @default("Active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Webhook {
+  id          String   @id @default(uuid())
+  tenantId    String?
+  endpointUrl String
+  events      String?
+  environment String?
+  successRate String?
+  lastPing    String?
+  status      String   @default("Active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Automation {
+  id          String   @id @default(uuid())
+  tenantId    String?
+  ruleName    String
+  eventTrigger String?
+  action      String?
+  target      String?
+  executions  String?
+  status      String   @default("Active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Workflow {
+  id            String   @id @default(uuid())
+  tenantId      String?
+  workflowName  String
+  trigger       String?
+  activeRuns    String?
+  successRate   String?
+  lastExecution String?
+  status        String   @default("Active")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// ----------------------------------
+// Identity & Devices
+// ----------------------------------
+model Authentication {
+  id              String   @id @default(uuid())
+  tenantId        String?
+  provider        String
+  clientId        String?
+  status          String   @default("Active")
+  usersConfigured String?
+  lastSynced      String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Device {
+  id          String   @id @default(uuid())
+  tenantId    String?
+  deviceName  String
+  owner       String?
+  browser     String?
+  operatingSystem String?
+  ip          String?
+  location    String?
+  lastLogin   String?
+  status      String   @default("Active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Session {
+  id          String   @id @default(uuid())
+  tenantId    String?
+  user        String?
+  browser     String?
+  os          String?
+  device      String?
+  ipAddress   String?
+  location    String?
+  lastActivity String?
+  status      String   @default("Active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model LoginLog {
+  id          String   @id @default(uuid())
+  tenantId    String?
+  user        String?
+  ipAddress   String?
+  country     String?
+  browser     String?
+  status      String?
+  date        String?
+  createdAt   DateTime @default(now())
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  tenantId    String?
+  eventId     String?
+  action      String?
+  actor       String?
+  resource    String?
+  ipAddress   String?
+  timestamp   String?
+  createdAt   DateTime @default(now())
+}
+
+// ----------------------------------
+// Notifications & Templates
+// ----------------------------------
+model Channel {
+  id            String   @id @default(uuid())
+  tenantId      String?
+  channelName   String
+  provider      String?
+  apiKeyStatus  String?
+  deliveryRate  String?
+  lastUsed      String?
+  status        String   @default("Active")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model EmailTemplate {
+  id          String   @id @default(uuid())
+  tenantId    String?
+  templateName String
+  subjectLine String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SMSTemplate {
+  id          String   @id @default(uuid())
+  tenantId    String?
+  templateName String
+  messageBody  String? @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model WhatsappTemplate {
+  id          String   @id @default(uuid())
+  tenantId    String?
+  templateName String
+  messageBody  String? @db.Text
+  status      String   @default("Active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model NotificationLog {
+  id          String   @id @default(uuid())
+  tenantId    String?
+  recipient   String?
+  channel     String?
+  subject     String?
+  provider    String?
+  status      String?
+  sentAt      String?
+  createdAt   DateTime @default(now())
+}
+
+// ----------------------------------
+// Storage & Media
+// ----------------------------------
+model File {
+  id          String   @id @default(uuid())
+  tenantId    String?
+  fileName    String
+  type        String?
+  size        String?
+  uploadedBy  String?
+  date        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ----------------------------------
+// Billing & Subscriptions
+// ----------------------------------
+model Plan {
+  id            String   @id @default(uuid())
+  planName      String
+  priceMonthly  String?
+  priceAnnual   String?
+  subscribers   String?
+  featuresLimit String?
+  status        String   @default("Active")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
 
 model Invoice {
-  id             String   @id @default(uuid())
-  invoiceId      String   @unique // e.g., INV-2023-001
-  tenantId       String
-  tenant         Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  
-  planId         String?
-  plan           Plan?    @relation(fields: [planId], references: [id])
-  
-  amount         String
-  status         String   @default("Pending") // Paid, Pending
-  date           String   
-  
-  transactions   Transaction[]
-  
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  @@index([tenantId])
-}
-
-model Transaction {
-  id             String   @id @default(uuid())
-  transactionId  String   @unique // e.g., TRX-001
-  tenantId       String
-  tenant         Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  
-  invoiceId      String?
-  invoice        Invoice? @relation(fields: [invoiceId], references: [id])
-  
-  amount         String
-  status         String   @default("Success") // Success, Failed
-  
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  @@index([tenantId])
-  @@index([invoiceId])
+  id          String   @id @default(uuid())
+  tenantId    String?
+  invoiceNo   String?
+  tenantName  String?
+  amount      String?
+  dateIssued  String?
+  dueDate     String?
+  status      String   @default("Pending")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Coupon {
-  id             String   @id @default(uuid())
-  tenantId       String
-  tenant         Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  
-  code           String
-  discount       String   
-  type           String   
-  uses           String   @default("0/100")
-  status         String   @default("Active") 
-  expires        String   
-  
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  @@index([tenantId])
+  id          String   @id @default(uuid())
+  code        String
+  discount    String?
+  duration    String?
+  redemptions String?
+  maxUses     String?
+  status      String   @default("Active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
-model UsageMetric {
-  id             String   @id @default(uuid())
-  tenantId       String
-  tenant         Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  
-  name           String   
-  used           Float    @default(0)
-  limit          Float    @default(100)
-  unit           String?  
-  color          String   @default("bg-blue-500")
-  warning        Boolean  @default(false)
-  
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+model Feature {
+  id          String   @id @default(uuid())
+  featureName String
+  key         String?
+  availableIn String?
+  usageLimit  String?
+  createdBy   String?
+  status      String   @default("Active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
 
-  @@index([tenantId])
+// ----------------------------------
+// Tenant Configuration
+// ----------------------------------
+model Branding {
+  id          String   @id @default(uuid())
+  tenantId    String?
+  tenantName  String?
+  primaryColor String?
+  logoUrl     String?
+  font        String?
+  customCss   String?  @db.Text
+  status      String   @default("Active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ScheduledReport {
+  id          String   @id @default(uuid())
+  tenantId    String?
+  reportName  String
+  type        String?
+  schedule    String?
+  recipients  String?
+  lastRun     String?
+  status      String   @default("Active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

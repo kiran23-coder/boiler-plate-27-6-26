@@ -4,8 +4,6 @@ const authMiddleware = require('../../middlewares/auth.middleware');
 
 const router = express.Router();
 
-router.use(authMiddleware);
-
 router.get('/', tenantController.getAllTenants);
 router.post('/', tenantController.createTenant);
 router.put('/:id', tenantController.updateTenant);

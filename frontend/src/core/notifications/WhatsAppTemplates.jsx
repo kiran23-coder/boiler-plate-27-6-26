@@ -79,6 +79,7 @@ export function WhatsAppTemplates() {
     setFormData(prev => ({ ...prev, [key]: value }))
   }
 
+  
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-slate-200 pb-4 dark:border-slate-800">
@@ -104,7 +105,7 @@ export function WhatsAppTemplates() {
               placeholder="Search templates..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="h-10 w-full rounded-md border border-slate-300 bg-white pl-10 pr-4 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+              className="h-10 w-full rounded-md border border-slate-300 bg-white pl-10 pr-4 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-white text-slate-900"
             />
           </div>
         </div>
@@ -122,7 +123,7 @@ export function WhatsAppTemplates() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full whitespace-nowrap text-left text-sm">
-              <thead className="bg-slate-50 dark:bg-slate-900/50">
+              <thead className="bg-slate-50 dark:bg-slate-900/50 dark:text-white text-slate-900">
                 <tr>
                   <th className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">Template Name</th>
                   <th className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">Message Body</th>
@@ -150,10 +151,7 @@ export function WhatsAppTemplates() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex justify-end space-x-2">
-                        <button 
-                          onClick={() => handleOpenEdit(item)}
-                          className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 dark:hover:text-primary transition-colors"
-                        >
+                        <button onClick={() => handleOpenEdit(item)} className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors">
                           <Edit className="h-4 w-4" />
                         </button>
                         <button 
@@ -176,7 +174,7 @@ export function WhatsAppTemplates() {
         <form onSubmit={isAddModalOpen ? handleAddSubmit : handleEditSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Template Name</label>
-            <input type="text" required value={formData.name || ''} onChange={(e) => handleInputChange('name', e.target.value)} placeholder="e.g. Appointment Confirmation" className="w-full h-10 px-3 rounded-md border border-slate-300 bg-white text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-white" />
+            <input type="text" required value={formData.name || ''} onChange={(e) => handleInputChange('name', e.target.value)} placeholder="e.g. Appointment Confirmation" className="w-full h-10 px-3 rounded-md border border-slate-300 bg-white text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-white text-slate-900" />
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Message Body</label>
@@ -186,7 +184,7 @@ export function WhatsAppTemplates() {
               value={formData.body || ''} 
               onChange={(e) => handleInputChange('body', e.target.value)} 
               placeholder="Hi {{1}}, your appointment is confirmed for {{2}}." 
-              className="w-full p-3 rounded-md border border-slate-300 bg-white text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-white resize-none"
+              className="w-full p-3 rounded-md border border-slate-300 bg-white text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-white resize-none text-slate-900"
             />
             <p className="text-xs text-slate-500 mt-1">Use {'{{1}}'}, {'{{2}}'} for dynamic variables as per WhatsApp Business API rules.</p>
           </div>
@@ -195,7 +193,7 @@ export function WhatsAppTemplates() {
             <select
               value={formData.status || 'pending'}
               onChange={(e) => handleInputChange('status', e.target.value)}
-              className="w-full h-10 px-3 rounded-md border border-slate-300 bg-white text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+              className="w-full h-10 px-3 rounded-md border border-slate-300 bg-white text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-white text-slate-900"
             >
               <option value="pending">Pending</option>
               <option value="approved">Approved</option>

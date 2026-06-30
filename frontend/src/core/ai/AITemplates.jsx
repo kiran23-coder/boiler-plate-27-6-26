@@ -71,6 +71,8 @@ export function AITemplates() {
     setFormData(prev => ({ ...prev, [key]: value }))
   }
 
+  
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-slate-200 pb-4 dark:border-slate-800">
@@ -96,7 +98,7 @@ export function AITemplates() {
               placeholder="Search prompts..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="h-10 w-full rounded-md border border-slate-300 bg-white pl-10 pr-4 text-sm outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+              className="h-10 w-full rounded-md border border-slate-300 bg-white pl-10 pr-4 text-sm outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white text-slate-900"
             />
           </div>
         </div>
@@ -114,7 +116,7 @@ export function AITemplates() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full whitespace-nowrap text-left text-sm">
-              <thead className="bg-slate-50 dark:bg-slate-900/50">
+              <thead className="bg-slate-50 dark:bg-slate-900/50 dark:text-white text-slate-900">
                 <tr>
                   <th className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">Template Name</th>
                   <th className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">Model</th>
@@ -138,10 +140,7 @@ export function AITemplates() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex justify-end space-x-2">
-                        <button 
-                          onClick={() => handleOpenEdit(item)}
-                          className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-purple-600 dark:hover:bg-slate-800 dark:hover:text-purple-500 transition-colors"
-                        >
+                        <button onClick={() => handleOpenEdit(item)} className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors">
                           <Edit className="h-4 w-4" />
                         </button>
                         <button 
@@ -164,19 +163,34 @@ export function AITemplates() {
         <form onSubmit={isAddModalOpen ? handleAddSubmit : handleEditSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Template Name</label>
-            <input type="text" required value={formData.name || ''} onChange={(e) => handleInputChange('name', e.target.value)} placeholder="e.g. Email Summarizer" className="w-full h-10 px-3 rounded-md border border-slate-300 bg-white text-sm outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white" />
+            <input type="text" required value={formData.name || ''} onChange={(e) => handleInputChange('name', e.target.value)} placeholder="e.g. Email Summarizer" className="w-full h-10 px-3 rounded-md border border-slate-300 bg-white text-sm outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white text-slate-900" />
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Target AI Model</label>
             <select 
               value={formData.model || 'GPT-4'} 
               onChange={(e) => handleInputChange('model', e.target.value)}
-              className="w-full h-10 px-3 rounded-md border border-slate-300 bg-white text-sm outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+              className="w-full h-10 px-3 rounded-md border border-slate-300 bg-white text-sm outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white text-slate-900"
             >
               <option value="GPT-4">GPT-4</option>
               <option value="GPT-3.5-Turbo">GPT-3.5-Turbo</option>
               <option value="Claude 3">Claude 3</option>
               <option value="Gemini Pro">Gemini Pro</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Linked Knowledge Base (Optional)</label>
+            <select 
+              value={formData.knowledgeBase || ''} 
+              onChange={(e) => handleInputChange('knowledgeBase', e.target.value)}
+              className="w-full h-10 px-3 rounded-md border border-slate-300 bg-white text-sm outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white text-slate-900"
+            >
+              <option value="">None (General Knowledge)</option>
+              <option value="Company Policy 2026">Company Policy 2026</option>
+              <option value="API Documentation">API Documentation</option>
+              <option value="Product Catalog">Product Catalog</option>
+              <option value="HR Handbook">HR Handbook</option>
+              <option value="Website Crawl">Website Crawl</option>
             </select>
           </div>
           <div>
@@ -187,7 +201,7 @@ export function AITemplates() {
               value={formData.prompt || ''} 
               onChange={(e) => handleInputChange('prompt', e.target.value)} 
               placeholder="System prompt instructions..." 
-              className="w-full p-3 rounded-md border border-slate-300 bg-white text-sm outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white resize-none"
+              className="w-full p-3 rounded-md border border-slate-300 bg-white text-sm outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white resize-none text-slate-900"
             />
             <p className="text-xs text-slate-500 mt-1">Use {'{{variable}}'} to inject dynamic data at runtime.</p>
           </div>

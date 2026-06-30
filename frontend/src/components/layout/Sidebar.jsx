@@ -7,8 +7,42 @@ import {
 } from "lucide-react"
 import { useAuth } from "@/contexts/AuthContext"
 
-const navigation = [
+export const navigation = [
+  // Step 1: Dashboard — First thing after login
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+
+  // Step 2: Multi Tenant — Setup organizations/companies first
+  { 
+    name: 'Multi Tenant', icon: Database,
+    children: [
+      { name: 'Tenants', href: '/multitenant/tenants' },
+      { name: 'Domains', href: '/multitenant/domains' },
+      { name: 'Branding', href: '/multitenant/branding' },
+    ]
+  },
+
+  // Step 3: Access Control — Roles → Permissions → Users
+  { 
+    name: 'Access Control', icon: Users,
+    children: [
+      { name: 'Roles',       href: '/access/roles' },        // Step 1: Create roles
+      { name: 'Permissions', href: '/access/permissions' },  // Step 2: Define what each role can do
+      { name: 'Users',       href: '/access/users' },        // Step 3: Assign role to user
+    ]
+  },
+
+  // Step 4: Organization — Structure under each tenant
+  { 
+    name: 'Tenant Structure', icon: Building2,
+    children: [
+      { name: 'Organizations', href: '/organization' },
+      { name: 'Branches', href: '/organization/branches' },
+      { name: 'Departments', href: '/organization/departments' },
+      { name: 'Teams', href: '/organization/teams' },
+    ]
+  },
+
+  // Step 5: Identity — Security & session management
   { 
     name: 'Identity', icon: ShieldCheck,
     children: [
@@ -18,31 +52,8 @@ const navigation = [
       { name: 'Login History', href: '/identity/logins' },
     ]
   },
-  { 
-    name: 'Organization', icon: Building2,
-    children: [
-      { name: 'Organizations', href: '/organization' },
-      { name: 'Branches', href: '/organization/branches' },
-      { name: 'Departments', href: '/organization/departments' },
-      { name: 'Teams', href: '/organization/teams' },
-    ]
-  },
-  { 
-    name: 'Access Control', icon: Users,
-    children: [
-      { name: 'Users', href: '/access/users' },
-      { name: 'Roles', href: '/access/roles' },
-      { name: 'Permissions', href: '/access/permissions' },
-    ]
-  },
-  { 
-    name: 'Multi Tenant', icon: Database,
-    children: [
-      { name: 'Tenants', href: '/multitenant/tenants' },
-      { name: 'Domains', href: '/multitenant/domains' },
-      { name: 'Branding', href: '/multitenant/branding' },
-    ]
-  },
+
+  // Step 6: Subscription — Monetization & plans
   { 
     name: 'Subscription', icon: CreditCard,
     children: [
@@ -53,14 +64,18 @@ const navigation = [
       { name: 'Invoices', href: '/subscription/invoices' },
     ]
   },
+
+  // Step 7: Notifications — Communication channels & templates
   { 
     name: 'Notifications', icon: Bell,
     children: [
-      { name: 'Templates', href: '/notifications/email-templates' },
       { name: 'Channels', href: '/notifications/channels' },
+      { name: 'Templates', href: '/notifications/email-templates' },
       { name: 'Logs', href: '/notifications/logs' },
     ]
   },
+
+  // Step 8: Storage — File management
   { 
     name: 'Storage', icon: FileBox,
     children: [
@@ -68,6 +83,8 @@ const navigation = [
       { name: 'Media', href: '/storage/media' },
     ]
   },
+
+  // Step 9: AI Platform — Intelligence engine
   { 
     name: 'AI Platform', icon: Bot,
     children: [
@@ -76,6 +93,8 @@ const navigation = [
       { name: 'Knowledge Base', href: '/ai/knowledge' },
     ]
   },
+
+  // Step 10: Workflow — Automation engine
   { 
     name: 'Workflow', icon: ActivitySquare,
     children: [
@@ -83,12 +102,8 @@ const navigation = [
       { name: 'Automations', href: '/workflow/automations' },
     ]
   },
-  { 
-    name: 'Reports', icon: BarChart3,
-    children: [
-      { name: 'Report Builder', href: '/reports/builder' },
-    ]
-  },
+
+  // Step 11: API — External integrations
   { 
     name: 'API', icon: Database,
     children: [
@@ -96,19 +111,33 @@ const navigation = [
       { name: 'Webhooks', href: '/api/webhooks' },
     ]
   },
-  { name: 'Settings', href: '/settings', icon: Settings },
+
+  // Step 12: Reports & Analytics
+  { 
+    name: 'Reports', icon: BarChart3,
+    children: [
+      { name: 'Report Builder', href: '/reports/builder' },
+    ]
+  },
   { name: 'Analytics', href: '/analytics', icon: BarChart3 },
+
+  // Step 13: Settings
+  { name: 'Settings', href: '/settings', icon: Settings },
+
+  // Step 14: System — Admin tools & logs
   { 
     name: 'System', icon: Settings,
     children: [
       { name: 'Audit', href: '/system/audit' },
     ]
   },
+
+  // Step 15: Super Admin — Highest level control
   { name: 'Super Admin', href: '/superadmin', icon: ShieldCheck },
 ]
 
 const rolePermissions = {
-  'Super Admin': ['Dashboard', 'Identity', 'Organization', 'Access Control', 'Multi Tenant', 'Subscription', 'Notifications', 'Storage', 'AI Platform', 'Workflow', 'Reports', 'API', 'Settings', 'Analytics', 'System', 'Super Admin'],
+  'Super Admin': ['Dashboard', 'Identity', 'Tenant Structure', 'Access Control', 'Multi Tenant', 'Subscription', 'Notifications', 'Storage', 'AI Platform', 'Workflow', 'Reports', 'API', 'Settings', 'Analytics', 'System', 'Super Admin'],
   'Sales Agent': ['Dashboard', 'Settings'],
   'Support Staff': ['Dashboard', 'Storage', 'Settings']
 }

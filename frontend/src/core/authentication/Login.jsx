@@ -59,7 +59,7 @@ export function Login() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="block w-full appearance-none rounded-md border border-slate-300 px-3 py-2 placeholder-slate-400 shadow-sm focus:border-primary focus:outline-none focus:ring-primary sm:text-sm dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+              className="block w-full appearance-none rounded-md border border-slate-300 px-3 py-2 placeholder-slate-400 shadow-sm focus:border-primary focus:outline-none focus:ring-primary sm:text-sm dark:border-slate-700 dark:bg-slate-900 dark:text-white text-slate-900"
             />
           </div>
         </div>
@@ -77,7 +77,7 @@ export function Login() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="block w-full appearance-none rounded-md border border-slate-300 px-3 py-2 placeholder-slate-400 shadow-sm focus:border-primary focus:outline-none focus:ring-primary sm:text-sm dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+              className="block w-full appearance-none rounded-md border border-slate-300 px-3 py-2 placeholder-slate-400 shadow-sm focus:border-primary focus:outline-none focus:ring-primary sm:text-sm dark:border-slate-700 dark:bg-slate-900 dark:text-white text-slate-900"
             />
           </div>
         </div>
@@ -88,7 +88,7 @@ export function Login() {
               id="remember-me"
               name="remember-me"
               type="checkbox"
-              className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary dark:border-slate-700 dark:bg-slate-900"
+              className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-white text-slate-900"
             />
             <label htmlFor="remember-me" className="ml-2 block text-sm text-slate-900 dark:text-slate-300">
               Remember me

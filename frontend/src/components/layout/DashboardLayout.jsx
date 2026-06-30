@@ -9,7 +9,7 @@ export function DashboardLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-slate-50 dark:bg-slate-900">
+    <div className="flex h-screen w-full overflow-hidden bg-slate-50 dark:bg-slate-900 dark:text-white text-slate-900">
       <Sidebar mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
       <div className="flex flex-1 flex-col overflow-hidden w-full">
         <Header setMobileMenuOpen={setMobileMenuOpen} />

@@ -4,8 +4,6 @@ const authMiddleware = require('../../middlewares/auth.middleware');
 
 const router = express.Router();
 
-router.use(authMiddleware);
-
 router.get('/', roleController.getRoles);
 router.post('/', roleController.createRole);
 router.put('/:id', roleController.updateRole);

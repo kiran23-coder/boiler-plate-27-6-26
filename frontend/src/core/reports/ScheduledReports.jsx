@@ -7,7 +7,6 @@ import { Modal } from '@/components/ui/Modal';
 
 export function ScheduledReports() {
   const [searchTerm, setSearchTerm] = useState("");
-<<<<<<< HEAD
   
   const [reports, setReports] = useState([
     { id: 1, c1: "Weekly Revenue Summary", c2: "Financial", c3: "Every Monday 9AM", c4: "finance@acme.com", c5: "Yesterday", c6: "Active" },
@@ -19,9 +18,7 @@ export function ScheduledReports() {
     { id: 7, c1: "Old Inactive Users", c2: "Growth", c3: "Every Month", c4: "growth@acme.com", c5: "Never", c6: "Paused" },
     { id: 8, c1: "API Usage Stats", c2: "Engineering", c3: "Every Sunday 11PM", c4: "api@acme.com", c5: "Last Sunday", c6: "Active" }
   ]);
-=======
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
->>>>>>> 7cbe9b095e3ac79adee145ea661bf0a1940d29c6
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingReport, setEditingReport] = useState(null);
@@ -75,11 +72,7 @@ export function ScheduledReports() {
       title="Scheduled Reports"
       description="Automated report generation and delivery."
       toolbarActions={
-<<<<<<< HEAD
         <Button onClick={() => handleOpenModal()}>
-=======
-        <Button onClick={() => setIsDrawerOpen(true)}>
->>>>>>> 7cbe9b095e3ac79adee145ea661bf0a1940d29c6
           <Plus className="mr-2 h-4 w-4" /> Add New
         </Button>
       }
@@ -91,7 +84,7 @@ export function ScheduledReports() {
       hasData={filteredData.length > 0}
       table={
         <table className="w-full whitespace-nowrap text-left text-sm">
-          <thead className="bg-slate-50 dark:bg-slate-900/50">
+          <thead className="bg-slate-50 dark:bg-slate-900/50 dark:text-white text-slate-900">
             <tr>
               <th className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">Report Name</th>
               <th className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">Type</th>
@@ -123,14 +116,10 @@ export function ScheduledReports() {
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end space-x-2">
-<<<<<<< HEAD
                     <button 
                       onClick={() => handleOpenModal(row)}
                       className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors"
                     >
-=======
-                    <button onClick={() => setIsDrawerOpen(true)} className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors">
->>>>>>> 7cbe9b095e3ac79adee145ea661bf0a1940d29c6
                       <Edit className="h-4 w-4" />
                     </button>
                     <button 
@@ -148,10 +137,10 @@ export function ScheduledReports() {
       }
     >
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
-        <StatCard title="Total Reports" value={reports.length.toString()} icon="FileText" trend="+5" color="blue" />
-        <StatCard title="Delivered (30d)" value="1,245" icon="Send" trend="+120" color="green" />
-        <StatCard title="Failed Deliveries" value="2" icon="AlertTriangle" trend="0" color="red" />
-        <StatCard title="Saved Templates" value="18" icon="Save" trend="+2" color="purple" />
+        <StatCard title="Total Reports" value={reports.length.toString()} icon="FileText" trend={`+${reports.filter(r => r.c6 === 'Active').length} active`} color="blue" />
+        <StatCard title="Delivered" value={reports.filter(r => r.c5 !== 'Never').length.toString()} icon="Send" trend="recently" color="green" />
+        <StatCard title="Failed Deliveries" value={reports.filter(r => r.c6 === 'Failed').length.toString()} icon="AlertTriangle" trend="needs review" color="red" />
+        <StatCard title="Paused Reports" value={reports.filter(r => r.c6 === 'Paused').length.toString()} icon="Save" trend="inactive" color="purple" />
       </div>
 
       <Modal isOpen={isModalOpen} onClose={handleCloseModal} title={editingReport ? "Edit Report" : "Add New Report"}>
@@ -162,7 +151,7 @@ export function ScheduledReports() {
               name="c1"
               value={formData.c1}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 dark:text-white dark:border-slate-700 dark:bg-slate-900"
               placeholder="e.g. Weekly Revenue Summary"
             />
           </div>
@@ -172,7 +161,7 @@ export function ScheduledReports() {
               name="c2"
               value={formData.c2}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 dark:text-white dark:border-slate-700 dark:bg-slate-900"
               placeholder="e.g. Financial"
             />
           </div>
@@ -182,7 +171,7 @@ export function ScheduledReports() {
               name="c3"
               value={formData.c3}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 dark:text-white dark:border-slate-700 dark:bg-slate-900"
               placeholder="e.g. Every Monday 9AM"
             />
           </div>
@@ -192,7 +181,7 @@ export function ScheduledReports() {
               name="c4"
               value={formData.c4}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 dark:text-white dark:border-slate-700 dark:bg-slate-900"
               placeholder="e.g. email@example.com"
             />
           </div>
@@ -202,7 +191,7 @@ export function ScheduledReports() {
               name="c6"
               value={formData.c6}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 dark:text-white dark:border-slate-700 dark:bg-slate-900"
             >
               <option value="Active">Active</option>
               <option value="Paused">Paused</option>

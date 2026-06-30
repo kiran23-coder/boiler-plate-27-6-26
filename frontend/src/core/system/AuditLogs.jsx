@@ -10,10 +10,10 @@ export function AuditLogs() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const [logs, setLogs] = useState([
-    { id: 1, c1: "evt_101", c2: "user.created", c3: "alice@acme.com", c4: "usr_501", c5: "192.168.1.1", c6: "2 mins ago" },
-    { id: 2, c1: "evt_102", c2: "role.updated", c3: "admin@system", c4: "rol_99", c5: "10.0.0.1", c6: "15 mins ago" },
-    { id: 3, c1: "evt_103", c2: "setting.changed", c3: "bob@stark.com", c4: "set_auth", c5: "172.16.0.4", c6: "1 hour ago" },
-    { id: 4, c1: "evt_104", c2: "api_key.deleted", c3: "charlie@wayne", c4: "key_404", c5: "192.168.2.10", c6: "2 hours ago" },
+    { id: 1, c1: "evt_101", c2: "plan.downgraded (Pro to Free)", c3: "rahul@system", c4: "Client X (tnt_105)", c5: "192.168.1.1", c6: "Today 2:15 PM" },
+    { id: 2, c1: "evt_102", c2: "api_key.deleted", c3: "client@wayne.com", c4: "key_404 (Stripe Prod)", c5: "10.0.0.1", c6: "Yesterday 11:30 PM" },
+    { id: 3, c1: "evt_103", c2: "webhook.added", c3: "bob@stark.com", c4: "hook_22", c5: "172.16.0.4", c6: "1 hour ago" },
+    { id: 4, c1: "evt_104", c2: "user.created", c3: "admin@system", c4: "usr_501 (John Doe)", c5: "192.168.2.10", c6: "2 hours ago" },
     { id: 5, c1: "evt_105", c2: "tenant.suspended", c3: "system", c4: "tnt_105", c5: "127.0.0.1", c6: "Yesterday" },
     { id: 6, c1: "evt_106", c2: "invoice.paid", c3: "stripe_webhook", c4: "inv_2026", c5: "3.3.3.3", c6: "Yesterday" },
     { id: 7, c1: "evt_107", c2: "user.deleted", c3: "diana@them.gov", c4: "usr_802", c5: "10.1.1.20", c6: "2 days ago" },
@@ -72,11 +72,7 @@ export function AuditLogs() {
       title="Audit Logs"
       description="Immutable record of system-wide changes."
       toolbarActions={
-<<<<<<< HEAD
         <Button onClick={() => handleOpenModal()}>
-=======
-        <Button onClick={() => setIsDrawerOpen(true)}>
->>>>>>> 7cbe9b095e3ac79adee145ea661bf0a1940d29c6
           <Plus className="mr-2 h-4 w-4" /> Add New
         </Button>
       }
@@ -88,7 +84,7 @@ export function AuditLogs() {
       hasData={filteredData.length > 0}
       table={
         <table className="w-full whitespace-nowrap text-left text-sm">
-          <thead className="bg-slate-50 dark:bg-slate-900/50">
+          <thead className="bg-slate-50 dark:bg-slate-900/50 dark:text-white text-slate-900">
             <tr>
               <th className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">Event ID</th>
               <th className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">Action</th>
@@ -120,14 +116,10 @@ export function AuditLogs() {
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end space-x-2">
-<<<<<<< HEAD
                     <button 
                       onClick={() => handleOpenModal(row)}
                       className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors"
                     >
-=======
-                    <button onClick={() => setIsDrawerOpen(true)} className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors">
->>>>>>> 7cbe9b095e3ac79adee145ea661bf0a1940d29c6
                       <Edit className="h-4 w-4" />
                     </button>
                     <button 
@@ -145,10 +137,10 @@ export function AuditLogs() {
       }
     >
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
-        <StatCard title="Total Events" value="1.2M" icon="Activity" trend="+45k" color="blue" />
-        <StatCard title="Critical Events" value="12" icon="AlertTriangle" trend="-2" color="orange" />
-        <StatCard title="Security Alerts" value="4" icon="ShieldAlert" trend="0" color="red" />
-        <StatCard title="Storage Used" value="4.5 GB" icon="Database" trend="+120 MB" color="purple" />
+        <StatCard title="Total Events" value={logs.length.toString()} icon="Activity" trend="system wide" color="blue" />
+        <StatCard title="Critical Events" value={logs.filter(l => l.c2.includes('failed') || l.c2.includes('deleted')).length.toString()} icon="AlertTriangle" trend="needs review" color="orange" />
+        <StatCard title="Security Alerts" value={logs.filter(l => l.c3.includes('unknown') || l.c2.includes('suspended')).length.toString()} icon="ShieldAlert" trend="high priority" color="red" />
+        <StatCard title="Storage Used" value={`${(logs.length * 0.05).toFixed(1)} MB`} icon="Database" trend="approximate" color="purple" />
       </div>
 
       <Modal isOpen={isModalOpen} onClose={handleCloseModal} title={editingLog ? "Edit Audit Log" : "Add New Audit Log"}>
@@ -159,7 +151,7 @@ export function AuditLogs() {
               name="c1"
               value={formData.c1}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 dark:text-white dark:border-slate-700 dark:bg-slate-900"
               placeholder="e.g. evt_101"
             />
           </div>
@@ -169,7 +161,7 @@ export function AuditLogs() {
               name="c2"
               value={formData.c2}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 dark:text-white dark:border-slate-700 dark:bg-slate-900"
               placeholder="e.g. user.created"
             />
           </div>
@@ -179,7 +171,7 @@ export function AuditLogs() {
               name="c3"
               value={formData.c3}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 dark:text-white dark:border-slate-700 dark:bg-slate-900"
               placeholder="e.g. alice@acme.com"
             />
           </div>
@@ -189,7 +181,7 @@ export function AuditLogs() {
               name="c4"
               value={formData.c4}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 dark:text-white dark:border-slate-700 dark:bg-slate-900"
               placeholder="e.g. usr_501"
             />
           </div>
@@ -199,7 +191,7 @@ export function AuditLogs() {
               name="c5"
               value={formData.c5}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 dark:text-white dark:border-slate-700 dark:bg-slate-900"
               placeholder="e.g. 192.168.1.1"
             />
           </div>
@@ -209,7 +201,7 @@ export function AuditLogs() {
               name="c6"
               value={formData.c6}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 dark:text-white dark:border-slate-700 dark:bg-slate-900"
               placeholder="e.g. Just now"
             />
           </div>

@@ -38,11 +38,11 @@ export function Header({ setMobileMenuOpen }) {
               </button>
             }
           >
-            <div className="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">Companies</div>
-            <DropdownItem onClick={() => navigate('/tenants/companies')}>Kiaan Technologies</DropdownItem>
-            <DropdownItem onClick={() => navigate('/tenants/companies')}>Acme Corp</DropdownItem>
+            <div className="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">Tenants</div>
+            <DropdownItem onClick={() => navigate('/multitenant/tenants')}>Kiaan Technologies</DropdownItem>
+            <DropdownItem onClick={() => navigate('/multitenant/tenants')}>Acme Corp</DropdownItem>
             <div className="border-t border-slate-100 my-1 dark:border-slate-800"></div>
-            <DropdownItem icon={Plus} onClick={() => navigate('/tenants/companies')}>Create Company</DropdownItem>
+            <DropdownItem icon={Plus} onClick={() => navigate('/multitenant/tenants')}>Create Tenant</DropdownItem>
           </Dropdown>
 
           <Dropdown
@@ -54,14 +54,14 @@ export function Header({ setMobileMenuOpen }) {
               </button>
             }
           >
-            <DropdownItem onClick={() => navigate('/tenants/branches')}>Delhi Branch</DropdownItem>
-            <DropdownItem onClick={() => navigate('/tenants/branches')}>Mumbai Branch</DropdownItem>
+            <DropdownItem onClick={() => navigate('/organization/branches')}>Delhi Branch</DropdownItem>
+            <DropdownItem onClick={() => navigate('/organization/branches')}>Mumbai Branch</DropdownItem>
           </Dropdown>
 
           <div className="w-full max-w-sm relative hidden lg:block ml-4">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <div 
-              className="h-9 w-full rounded-md border border-slate-200 bg-slate-50 pl-10 pr-4 flex items-center text-sm text-slate-400 dark:border-slate-800 dark:bg-slate-900 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors"
+              className="h-9 w-full rounded-md border border-slate-200 bg-slate-50 pl-10 pr-4 flex items-center text-sm text-slate-400 dark:border-slate-800 dark:bg-slate-900 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors dark:text-white"
               onClick={() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }))}
             >
               Search... <span className="ml-auto text-xs font-mono bg-white dark:bg-slate-800 px-1.5 py-0.5 rounded border dark:border-slate-700">Ctrl K</span>
@@ -77,9 +77,9 @@ export function Header({ setMobileMenuOpen }) {
               </Button>
             }
           >
-            <DropdownItem onClick={() => navigate('/users')}>Create User</DropdownItem>
-            <DropdownItem onClick={() => navigate('/roles/permissions')}>Create Role</DropdownItem>
-            <DropdownItem onClick={() => navigate('/crm/pipeline')}>Create Deal</DropdownItem>
+            <DropdownItem onClick={() => navigate('/access/users')}>Create User</DropdownItem>
+            <DropdownItem onClick={() => navigate('/access/roles')}>Create Role</DropdownItem>
+            <DropdownItem onClick={() => navigate('/multitenant/tenants')}>Create Tenant</DropdownItem>
           </Dropdown>
 
           <Dropdown
@@ -117,7 +117,7 @@ export function Header({ setMobileMenuOpen }) {
               {user?.role && <span className="mt-1 inline-block px-2 py-0.5 rounded text-[10px] font-medium bg-primary/10 text-primary">{user.role}</span>}
             </div>
             <div className="border-t border-slate-100 dark:border-slate-800"></div>
-            <DropdownItem icon={User} onClick={() => navigate('/users')}>My Profile</DropdownItem>
+            <DropdownItem icon={User} onClick={() => navigate('/settings')}>My Profile</DropdownItem>
             <DropdownItem icon={Settings} onClick={() => navigate('/settings')}>Preferences</DropdownItem>
             <div className="border-t border-slate-100 dark:border-slate-800"></div>
             <DropdownItem icon={LogOut} onClick={handleLogout}>Logout</DropdownItem>

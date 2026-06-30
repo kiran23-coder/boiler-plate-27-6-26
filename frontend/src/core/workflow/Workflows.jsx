@@ -10,7 +10,7 @@ export function Workflows() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const data = [
+  const [data, setData] = useState([
   {
     "id": 1,
     "c1": "User Onboarding",
@@ -83,7 +83,40 @@ export function Workflows() {
     "c5": "Jan 1, 2026",
     "c6": "Active"
   }
-];
+]);
+
+  
+  const [editingId, setEditingId] = useState(null);
+  const [formData, setFormData] = useState({ c1: '', c2: '', c3: '', c4: '', c5: '', c6: '' });
+
+  const handleOpenDrawer = (row = null) => {
+    if (row) {
+      setEditingId(row.id);
+      setFormData(row);
+    } else {
+      setEditingId(null);
+      setFormData({ c1: '', c2: '', c3: '', c4: '', c5: '', c6: '' });
+    }
+    setIsDrawerOpen(true);
+  };
+
+  const handleSave = () => {
+    if (editingId) {
+      setData(data.map(d => d.id === editingId ? { ...formData, id: editingId } : d));
+    } else {
+      setData([{ ...formData, id: Date.now() }, ...data]);
+    }
+    setIsDrawerOpen(false);
+  };
+
+  const handleDelete = (id) => {
+    setData(data.filter(d => d.id !== id));
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
   const filteredData = data.filter(item => 
     Object.values(item).some(val => 
@@ -97,7 +130,7 @@ export function Workflows() {
       title="Active Workflows"
       description="Monitor multi-step state machines and background jobs."
       toolbarActions={
-        <Button onClick={() => setIsDrawerOpen(true)}>
+        <Button onClick={() => handleOpenDrawer()}>
           <Plus className="mr-2 h-4 w-4" /> Add New
         </Button>
       }
@@ -109,7 +142,7 @@ export function Workflows() {
       hasData={filteredData.length > 0}
       table={
         <table className="w-full whitespace-nowrap text-left text-sm">
-          <thead className="bg-slate-50 dark:bg-slate-900/50">
+          <thead className="bg-slate-50 dark:bg-slate-900/50 dark:text-white text-slate-900">
             <tr>
               <th className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">Workflow Name</th>
               <th className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">Trigger</th>
@@ -141,10 +174,10 @@ export function Workflows() {
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end space-x-2">
-                    <button onClick={() => setIsDrawerOpen(true)} className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors">
+                    <button onClick={() => handleOpenDrawer(row)} className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors">
                       <Edit className="h-4 w-4" />
                     </button>
-                    <button className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-red-500 dark:hover:bg-slate-800 transition-colors">
+                    <button onClick={() => handleDelete(row.id)} className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-red-500 dark:hover:bg-slate-800 transition-colors">
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
@@ -156,32 +189,51 @@ export function Workflows() {
       }
     >
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
-  <StatCard title="Active Workflows" value="45" icon="ActivitySquare" trend="+2" color="blue" />
-  <StatCard title="Total Executions" value="1.2M" icon="PlayCircle" trend="+15k" color="purple" />
-  <StatCard title="Pending Jobs" value="450" icon="Clock" trend="-20" color="orange" />
-  <StatCard title="Failed Jobs" value="12" icon="AlertOctagon" trend="+1" color="red" />
-</div>
+        <StatCard title="Total Workflows" value={data.length.toString()} icon="ActivitySquare" trend={`+${data.filter(d => d.c6 === 'Active').length} active`} color="blue" />
+        <StatCard title="Active Workflows" value={data.filter(d => d.c6 === 'Active').length.toString()} icon="PlayCircle" trend={`out of ${data.length} total`} color="purple" />
+        <StatCard title="Warning Status" value={data.filter(d => d.c6 === 'Warning').length.toString()} icon="Clock" trend="check logs" color="orange" />
+        <StatCard title="Failed Workflows" value={data.filter(d => d.c6 === 'Failed').length.toString()} icon="AlertOctagon" trend="action required" color="red" />
+      </div>
     </UniversalCRUDLayout>
-      <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} title="Add/Edit Active Workflows">
+      <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} title={editingId ? "Edit Record" : "Add Record"}>
         <div className="space-y-4 mt-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Name</label>
-            <input type="text" className="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" placeholder="Enter name..." />
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Workflow Name</label>
+            <input name="c1" value={formData.c1} onChange={handleChange} type="text" className="block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" placeholder="Enter Workflow Name..." />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Description</label>
-            <textarea className="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" rows="3" placeholder="Enter details..."></textarea>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Trigger</label>
+            <select name="c2" value={formData.c2} onChange={handleChange} className="block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700">
+              <option value="">Select Trigger...</option>
+              <option value="user.created">user.created</option>
+              <option value="cron (daily)">cron (daily)</option>
+              <option value="cron (monthly)">cron (monthly)</option>
+              <option value="Manual">Manual</option>
+            </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Status</label>
-            <select className="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700">
-              <option>Active</option>
-              <option>Inactive</option>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Active Runs</label>
+            <input name="c3" value={formData.c3} onChange={handleChange} type="text" className="block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" placeholder="Enter Active Runs..." />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Success Rate</label>
+            <input name="c4" value={formData.c4} onChange={handleChange} type="text" className="block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" placeholder="Enter Success Rate..." />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Last Execution</label>
+            <input name="c5" value={formData.c5} onChange={handleChange} type="text" className="block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" placeholder="Enter Last Execution..." />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Status</label>
+            <select name="c6" value={formData.c6} onChange={handleChange} className="block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700">
+              <option value="Active">Active</option>
+              <option value="Failed">Failed</option>
+              <option value="Warning">Warning</option>
             </select>
           </div>
           <div className="pt-4 flex justify-end space-x-2">
             <Button variant="outline" onClick={() => setIsDrawerOpen(false)}>Cancel</Button>
-            <Button onClick={() => setIsDrawerOpen(false)}>Save Changes</Button>
+            <Button onClick={handleSave}>Save Changes</Button>
           </div>
         </div>
       </Drawer>

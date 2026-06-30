@@ -70,7 +70,7 @@ export function AISettings() {
                 </div>
               </div>
             </div>
-            <div className="border-t border-slate-100 bg-slate-50 px-5 py-3 dark:border-slate-800 dark:bg-slate-900/50">
+            <div className="border-t border-slate-100 bg-slate-50 px-5 py-3 dark:border-slate-800 dark:bg-slate-900/50 dark:text-white text-slate-900">
               <button 
                 onClick={() => handleOpenEdit(setting)}
                 className="text-sm font-medium text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 w-full text-center"
@@ -96,7 +96,7 @@ export function AISettings() {
               value={apiKey} 
               onChange={(e) => setApiKey(e.target.value)} 
               placeholder={`Enter your ${selectedProvider?.provider} API key`} 
-              className="w-full h-10 px-3 rounded-md border border-slate-300 bg-white text-sm outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white" 
+              className="w-full h-10 px-3 rounded-md border border-slate-300 bg-white text-sm outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white text-slate-900" 
             />
           </div>
           <div className="mt-6 flex justify-end space-x-3 border-t border-slate-100 dark:border-slate-800 pt-4">

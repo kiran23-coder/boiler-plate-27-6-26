@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+// API client removed for UI-only mode
 import { Button } from '@/components/ui/Button';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 import { UniversalCRUDLayout } from '@/components/layout/UniversalCRUDLayout';
@@ -10,80 +11,45 @@ export function Companies() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const data = [
-  {
-    "id": 1,
-    "c1": "tnt_101",
-    "c2": "Acme Corp",
-    "c3": "Enterprise",
-    "c4": "1,245",
-    "c5": "12.4 GB",
-    "c6": "Active"
-  },
-  {
-    "id": 2,
-    "c1": "tnt_102",
-    "c2": "Stark Ind.",
-    "c3": "Enterprise",
-    "c4": "8,432",
-    "c5": "45.1 GB",
-    "c6": "Active"
-  },
-  {
-    "id": 3,
-    "c1": "tnt_103",
-    "c2": "Wayne Ent.",
-    "c3": "Pro",
-    "c4": "5,102",
-    "c5": "18.2 GB",
-    "c6": "Active"
-  },
-  {
-    "id": 4,
-    "c1": "tnt_104",
-    "c2": "Small Biz",
-    "c3": "Startup",
-    "c4": "12",
-    "c5": "1.2 GB",
-    "c6": "Active"
-  },
-  {
-    "id": 5,
-    "c1": "tnt_105",
-    "c2": "Umbrella",
-    "c3": "Enterprise",
-    "c4": "9,500",
-    "c5": "120.5 GB",
-    "c6": "Suspended"
-  },
-  {
-    "id": 6,
-    "c1": "tnt_106",
-    "c2": "Test Org",
-    "c3": "Free",
-    "c4": "2",
-    "c5": "0.1 GB",
-    "c6": "Active"
-  },
-  {
-    "id": 7,
-    "c1": "tnt_107",
-    "c2": "Cyberdyne",
-    "c3": "Pro",
-    "c4": "450",
-    "c5": "8.4 GB",
-    "c6": "Active"
-  },
-  {
-    "id": 8,
-    "c1": "tnt_108",
-    "c2": "Initech",
-    "c3": "Startup",
-    "c4": "150",
-    "c5": "3.2 GB",
-    "c6": "Pending"
-  }
-];
+  const [data, setData] = useState([
+    { id: 1, c1: 'TNT-001', c2: 'Acme Corp', c3: 'Enterprise', c4: '1,200', c5: '50 GB', c6: 'Active' },
+    { id: 2, c1: 'TNT-002', c2: 'Stark Industries', c3: 'Pro', c4: '45', c5: '10 GB', c6: 'Active' },
+    { id: 3, c1: 'TNT-003', c2: 'Wayne Enterprises', c3: 'Enterprise', c4: '3,400', c5: '120 GB', c6: 'Active' },
+    { id: 4, c1: 'TNT-004', c2: 'Globex', c3: 'Basic', c4: '12', c5: '2 GB', c6: 'Suspended' }
+  ]);
+  const [editingId, setEditingId] = useState(null);
+  const [formData, setFormData] = useState({ c1: '', c2: '', c3: '', c4: '', c5: '', c6: '' });
+
+  // fetchTenants removed as we are using dummy data
+
+  const handleOpenDrawer = (row = null) => {
+    if (row) {
+      setEditingId(row.id);
+      setFormData(row);
+    } else {
+      setEditingId(null);
+      setFormData({ c1: `TNT-00${data.length + 1}`, c2: '', c3: 'Free', c4: '0', c5: '0 GB', c6: 'Active' });
+    }
+    setIsDrawerOpen(true);
+  };
+
+  const handleSave = () => {
+    if (editingId) {
+      setData(data.map(d => d.id === editingId ? { ...d, ...formData } : d));
+    } else {
+      setData([{ ...formData, id: Date.now() }, ...data]);
+    }
+    setIsDrawerOpen(false);
+  };
+
+  const handleDelete = (id) => {
+    setData(data.filter(d => d.id !== id));
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
   const filteredData = data.filter(item => 
     Object.values(item).some(val => 
@@ -97,7 +63,7 @@ export function Companies() {
       title="Tenants"
       description="Manage all isolated tenants and organizations on the platform."
       toolbarActions={
-        <Button onClick={() => setIsDrawerOpen(true)}>
+        <Button onClick={() => handleOpenDrawer()}>
           <Plus className="mr-2 h-4 w-4" /> Add New
         </Button>
       }
@@ -109,7 +75,7 @@ export function Companies() {
       hasData={filteredData.length > 0}
       table={
         <table className="w-full whitespace-nowrap text-left text-sm">
-          <thead className="bg-slate-50 dark:bg-slate-900/50">
+          <thead className="bg-slate-50 dark:bg-slate-900/50 dark:text-white text-slate-900">
             <tr>
               <th className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">Tenant ID</th>
               <th className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">Tenant Name</th>
@@ -142,10 +108,10 @@ export function Companies() {
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end space-x-2">
-                    <button onClick={() => setIsDrawerOpen(true)} className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors">
+                    <button onClick={() => handleOpenDrawer(row)} className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors">
                       <Edit className="h-4 w-4" />
                     </button>
-                    <button className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-red-500 dark:hover:bg-slate-800 transition-colors">
+                    <button onClick={() => handleDelete(row.id)} className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-red-500 dark:hover:bg-slate-800 transition-colors">
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
@@ -157,32 +123,48 @@ export function Companies() {
       }
     >
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
-  <StatCard title="Total Tenants" value="452" icon="Database" trend="+12" color="blue" />
-  <StatCard title="Active Plans" value="410" icon="CreditCard" trend="+8" color="green" />
-  <StatCard title="Custom Domains" value="120" icon="Globe" trend="+5" color="purple" />
-  <StatCard title="Total Storage" value="45.2 TB" icon="HardDrive" trend="+1.2 TB" color="orange" />
-</div>
+        <StatCard title="Total Tenants" value={data.length.toString()} icon="Database" trend={`+${data.filter(t => t.c6 === 'Active').length}`} color="blue" />
+        <StatCard title="Active Plans" value={data.filter(t => t.c6 === 'Active').length.toString()} icon="CreditCard" trend={`${data.filter(t => t.c6 === 'Suspended').length} suspended`} color="green" />
+        <StatCard title="Enterprise Tenants" value={data.filter(t => t.c3 === 'Enterprise').length.toString()} icon="Globe" trend={`${data.filter(t => t.c3 === 'Pro').length} Pro`} color="purple" />
+        <StatCard title="Total Users" value={data.reduce((sum, t) => sum + (parseInt(t.c4) || 0), 0).toLocaleString()} icon="HardDrive" trend={`across ${data.length} tenants`} color="orange" />
+      </div>
     </UniversalCRUDLayout>
-      <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} title="Add/Edit Tenants">
+      <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} title={editingId ? "Edit Record" : "Add Record"}>
         <div className="space-y-4 mt-4">
+
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Name</label>
-            <input type="text" className="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" placeholder="Enter name..." />
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Tenant Name</label>
+            <input name="c2" value={formData.c2} onChange={handleChange} type="text" className="block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" placeholder="Enter Tenant Name..." />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Description</label>
-            <textarea className="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" rows="3" placeholder="Enter details..."></textarea>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Plan</label>
+            <select name="c3" value={formData.c3} onChange={handleChange} className="block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700">
+              <option value="">Select Plan...</option>
+              <option value="Free">Free</option>
+              <option value="Basic">Basic</option>
+              <option value="Pro">Pro</option>
+              <option value="Enterprise">Enterprise</option>
+            </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Status</label>
-            <select className="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700">
-              <option>Active</option>
-              <option>Inactive</option>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Users</label>
+            <input name="c4" value={formData.c4} onChange={handleChange} type="text" className="block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" placeholder="Enter Users..." />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Database Size</label>
+            <input name="c5" value={formData.c5} onChange={handleChange} type="text" className="block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" placeholder="Enter Database Size..." />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Status</label>
+            <select name="c6" value={formData.c6} onChange={handleChange} className="block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700">
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+              <option value="Suspended">Suspended</option>
             </select>
           </div>
           <div className="pt-4 flex justify-end space-x-2">
             <Button variant="outline" onClick={() => setIsDrawerOpen(false)}>Cancel</Button>
-            <Button onClick={() => setIsDrawerOpen(false)}>Save Changes</Button>
+            <Button onClick={handleSave}>Save Changes</Button>
           </div>
         </div>
       </Drawer>

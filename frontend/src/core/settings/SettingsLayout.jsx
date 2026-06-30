@@ -120,7 +120,7 @@ export function SettingsLayout() {
                     </div>
                   </div>
                   
-                  <div className="mt-6 flex items-center justify-between max-w-lg p-4 rounded-lg border border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900/50">
+                  <div className="mt-6 flex items-center justify-between max-w-lg p-4 rounded-lg border border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900/50 dark:text-white text-slate-900">
                     <div>
                       <h4 className="text-sm font-medium text-slate-900 dark:text-white">Enable Automated Notifications</h4>
                       <p className="text-xs text-slate-500 mt-1">Send automatic WhatsApp alerts for invoices and deal updates.</p>
@@ -147,14 +147,14 @@ export function SettingsLayout() {
                   <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Connect Stripe or Razorpay to accept payments.</p>
                 </div>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <div className="relative flex items-center space-x-3 rounded-lg border border-slate-300 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 hover:border-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-slate-500">
+                  <div className="relative flex items-center space-x-3 rounded-lg border border-slate-300 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 hover:border-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-slate-500 dark:text-white text-slate-900">
                     <div className="min-w-0 flex-1">
                       <span className="absolute inset-0" aria-hidden="true" />
                       <p className="text-sm font-medium text-slate-900 dark:text-white">Stripe</p>
                       <p className="text-sm text-slate-500 dark:text-slate-400">Status: Disconnected</p>
                     </div>
                   </div>
-                  <div className="relative flex items-center space-x-3 rounded-lg border border-slate-300 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 hover:border-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-slate-500">
+                  <div className="relative flex items-center space-x-3 rounded-lg border border-slate-300 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 hover:border-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-slate-500 dark:text-white text-slate-900">
                     <div className="min-w-0 flex-1">
                       <span className="absolute inset-0" aria-hidden="true" />
                       <p className="text-sm font-medium text-slate-900 dark:text-white">Razorpay</p>
@@ -176,7 +176,7 @@ export function SettingsLayout() {
                 <div className="pt-6 border-t border-slate-200 dark:border-slate-800">
                   <h4 className="text-md font-medium text-slate-900 dark:text-white mb-4">Company Logo</h4>
                   <div className="flex items-center space-x-6">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 dark:text-white text-slate-900">
                       <span className="text-xs text-slate-400">Upload</span>
                     </div>
                     <div>
@@ -206,13 +206,13 @@ export function SettingsLayout() {
                 <div className="pt-6 border-t border-slate-200 dark:border-slate-800">
                   <h4 className="text-md font-medium text-slate-900 dark:text-white mb-4">Appearance</h4>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div className="cursor-pointer rounded-lg border-2 border-primary bg-white p-4 shadow-sm dark:bg-slate-900">
+                    <div className="cursor-pointer rounded-lg border-2 border-primary bg-white p-4 shadow-sm dark:bg-slate-900 dark:text-white text-slate-900">
                       <div className="flex items-center justify-between">
                         <p className="text-sm font-medium text-slate-900 dark:text-white">System</p>
                         <div className="h-4 w-4 rounded-full border-4 border-primary bg-white"></div>
                       </div>
                     </div>
-                    <div className="cursor-pointer rounded-lg border border-slate-200 bg-white p-4 shadow-sm hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700">
+                    <div className="cursor-pointer rounded-lg border border-slate-200 bg-white p-4 shadow-sm hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700 dark:text-white text-slate-900">
                       <div className="flex items-center justify-between">
                         <p className="text-sm font-medium text-slate-900 dark:text-white">Light</p>
                         <div className="h-4 w-4 rounded-full border border-slate-300 dark:border-slate-600"></div>
@@ -274,7 +274,7 @@ export function SettingsLayout() {
                 <div className="pt-6 border-t border-slate-200 dark:border-slate-800">
                   <h4 className="text-md font-medium text-slate-900 dark:text-white mb-4">Active Sessions</h4>
                   <div className="rounded-lg border border-slate-200 dark:border-slate-800 divide-y divide-slate-200 dark:divide-slate-800">
-                    <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900/50">
+                    <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900/50 dark:text-white text-slate-900">
                       <div>
                         <p className="text-sm font-medium text-slate-900 dark:text-white">Windows PC - Chrome</p>
                         <p className="text-xs text-slate-500 mt-0.5">Mumbai, India • Active now</p>

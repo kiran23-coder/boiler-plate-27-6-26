@@ -157,7 +157,7 @@ export function AIProviders() {
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Status</label>
             <select
-              className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+              className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-white text-slate-900"
               value={formData.status || 'Active'}
               onChange={(e) => setFormData({...formData, status: e.target.value})}
             >
@@ -197,7 +197,7 @@ export function AIProviders() {
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Status</label>
             <select
-              className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+              className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-white text-slate-900"
               value={formData.status || 'Active'}
               onChange={(e) => setFormData({...formData, status: e.target.value})}
             >

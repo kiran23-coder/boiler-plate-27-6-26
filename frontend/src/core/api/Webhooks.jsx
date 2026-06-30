@@ -71,11 +71,7 @@ export function Webhooks() {
       title="Webhooks"
       description="Manage event-driven HTTP callbacks."
       toolbarActions={
-<<<<<<< HEAD
         <Button onClick={() => handleOpenModal()}>
-=======
-        <Button onClick={() => setIsDrawerOpen(true)}>
->>>>>>> 7cbe9b095e3ac79adee145ea661bf0a1940d29c6
           <Plus className="mr-2 h-4 w-4" /> Add New
         </Button>
       }
@@ -87,7 +83,7 @@ export function Webhooks() {
       hasData={filteredData.length > 0}
       table={
         <table className="w-full whitespace-nowrap text-left text-sm">
-          <thead className="bg-slate-50 dark:bg-slate-900/50">
+          <thead className="bg-slate-50 dark:bg-slate-900/50 dark:text-white text-slate-900">
             <tr>
               <th className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">Endpoint URL</th>
               <th className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">Events</th>
@@ -119,14 +115,10 @@ export function Webhooks() {
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end space-x-2">
-<<<<<<< HEAD
                     <button 
                       onClick={() => handleOpenModal(row)}
                       className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors"
                     >
-=======
-                    <button onClick={() => setIsDrawerOpen(true)} className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors">
->>>>>>> 7cbe9b095e3ac79adee145ea661bf0a1940d29c6
                       <Edit className="h-4 w-4" />
                     </button>
                     <button 
@@ -151,19 +143,38 @@ export function Webhooks() {
               name="c1"
               value={formData.c1}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 dark:text-white dark:border-slate-700 dark:bg-slate-900"
               placeholder="e.g. https://api.example.com/webhook"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Events</label>
-            <input 
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Events (Triggers from Automations)</label>
+            <select 
               name="c2"
               value={formData.c2}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
-              placeholder="e.g. user.created, payment.*"
-            />
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 dark:text-white dark:border-slate-700 dark:bg-slate-900"
+            >
+              <option value="* (All)">* (All Events)</option>
+              <option value="user.created">user.created (Identity)</option>
+              <option value="payment.failed">payment.failed (Subscription)</option>
+              <option value="ticket.created">ticket.created (Support)</option>
+              <option value="invoice.paid">invoice.paid (Subscription)</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Tenant (Client)</label>
+            <select 
+              name="tenant"
+              value={formData.tenant || ''}
+              onChange={handleChange}
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 dark:text-white dark:border-slate-700 dark:bg-slate-900"
+            >
+              <option value="">Select Tenant...</option>
+              <option value="Acme Corp">Acme Corp</option>
+              <option value="Stark Ind.">Stark Ind.</option>
+              <option value="Wayne Ent.">Wayne Ent.</option>
+            </select>
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Environment</label>
@@ -171,7 +182,7 @@ export function Webhooks() {
               name="c3"
               value={formData.c3}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 dark:text-white dark:border-slate-700 dark:bg-slate-900"
             >
               <option value="Production">Production</option>
               <option value="Staging">Staging</option>
@@ -184,7 +195,7 @@ export function Webhooks() {
               name="c6"
               value={formData.c6}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 dark:text-white dark:border-slate-700 dark:bg-slate-900"
             >
               <option value="Active">Active</option>
               <option value="Disabled">Disabled</option>

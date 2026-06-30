@@ -23,9 +23,9 @@ export function Drawer({ isOpen, onClose, title, children }) {
       />
       
       <div className="relative w-full max-w-lg transform transition-all ease-in-out duration-300">
-        <div className="flex max-h-[85vh] flex-col overflow-hidden rounded-xl bg-white shadow-2xl dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+        <div className="flex max-h-[85vh] flex-col overflow-hidden rounded-xl bg-white shadow-2xl dark:bg-slate-900 border border-slate-200 dark:border-slate-800 dark:text-white text-slate-900">
           
-          <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+          <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 dark:text-white text-slate-900">
             <h2 className="text-lg font-semibold leading-6 text-slate-900 dark:text-white">
               {title}
             </h2>

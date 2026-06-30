@@ -22,7 +22,7 @@ export function SkeletonCard() {
 export function SkeletonTable({ rows = 5 }) {
   return (
     <div className="w-full overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
-      <div className="border-b border-slate-200 bg-slate-50 px-6 py-4 dark:border-slate-800 dark:bg-slate-900/50">
+      <div className="border-b border-slate-200 bg-slate-50 px-6 py-4 dark:border-slate-800 dark:bg-slate-900/50 dark:text-white text-slate-900">
         <Skeleton className="h-4 w-1/4" />
       </div>
       <div className="divide-y divide-slate-200 dark:divide-slate-800">

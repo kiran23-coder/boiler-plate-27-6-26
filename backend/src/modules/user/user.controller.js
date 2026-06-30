@@ -3,7 +3,8 @@ const { sendSuccess, sendError } = require('../../core/response');
 
 exports.getUsers = async (req, res) => {
   try {
-    const users = await userService.getUsers(req.user.tenantId);
+    const tenantId = req.user ? req.user.tenantId : req.query.tenantId;
+    const users = await userService.getUsers(tenantId);
     return sendSuccess(res, 'Users retrieved successfully', users);
   } catch (error) {
     return sendError(res, 'Failed to fetch users', 'INTERNAL_ERROR', [], 500);
@@ -12,7 +13,8 @@ exports.getUsers = async (req, res) => {
 
 exports.createUser = async (req, res) => {
   try {
-    const user = await userService.createUser({ ...req.body, tenantId: req.user.tenantId });
+    const tenantId = req.user ? req.user.tenantId : req.body.tenantId;
+    const user = await userService.createUser({ ...req.body, tenantId });
     return sendSuccess(res, 'User created successfully', user, null, 201);
   } catch (error) {
     if (error.message === 'Email already exists') return sendError(res, error.message, 'CONFLICT', [], 409);

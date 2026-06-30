@@ -3,7 +3,8 @@ const { sendSuccess, sendError } = require('../../core/response');
 
 exports.getRoles = async (req, res) => {
   try {
-    const roles = await roleService.getRoles(req.user.tenantId);
+    const tenantId = req.user ? req.user.tenantId : req.query.tenantId;
+    const roles = await roleService.getRoles(tenantId);
     return sendSuccess(res, 'Roles retrieved successfully', roles);
   } catch (error) {
     return sendError(res, 'Failed to fetch roles', 'INTERNAL_ERROR', [], 500);
@@ -12,7 +13,8 @@ exports.getRoles = async (req, res) => {
 
 exports.createRole = async (req, res) => {
   try {
-    const role = await roleService.createRole({ ...req.body, tenantId: req.user.tenantId });
+    const tenantId = req.user ? req.user.tenantId : req.body.tenantId;
+    const role = await roleService.createRole({ ...req.body, tenantId });
     return sendSuccess(res, 'Role created successfully', role, null, 201);
   } catch (error) {
     return sendError(res, 'Failed to create role', 'INTERNAL_ERROR', [], 500);

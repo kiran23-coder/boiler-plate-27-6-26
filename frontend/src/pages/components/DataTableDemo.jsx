@@ -51,7 +51,7 @@ export function DataTableDemo() {
               placeholder="Search records..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="h-10 w-full rounded-md border border-slate-300 bg-white pl-10 pr-4 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+              className="h-10 w-full rounded-md border border-slate-300 bg-white pl-10 pr-4 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-white text-slate-900"
             />
           </div>
           <div className="flex items-center space-x-3 w-full sm:w-auto">
@@ -77,10 +77,10 @@ export function DataTableDemo() {
 
         <div className="overflow-x-auto">
           <table className="w-full whitespace-nowrap text-left text-sm">
-            <thead className="bg-slate-50 dark:bg-slate-900/50">
+            <thead className="bg-slate-50 dark:bg-slate-900/50 dark:text-white text-slate-900">
               <tr>
                 <th scope="col" className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">
-                  <input type="checkbox" onChange={toggleAll} checked={selected.length === filteredData.length && filteredData.length > 0} className="rounded border-slate-300 text-primary focus:ring-primary dark:border-slate-700 dark:bg-slate-900" />
+                  <input type="checkbox" onChange={toggleAll} checked={selected.length === filteredData.length && filteredData.length > 0} className="rounded border-slate-300 text-primary focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-white text-slate-900" />
                 </th>
                 <th scope="col" className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">Name</th>
                 <th scope="col" className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">Email</th>
@@ -94,7 +94,7 @@ export function DataTableDemo() {
                 filteredData.map((item) => (
                   <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
                     <td className="px-6 py-4">
-                      <input type="checkbox" checked={selected.includes(item.id)} onChange={() => toggleRow(item.id)} className="rounded border-slate-300 text-primary focus:ring-primary dark:border-slate-700 dark:bg-slate-900" />
+                      <input type="checkbox" checked={selected.includes(item.id)} onChange={() => toggleRow(item.id)} className="rounded border-slate-300 text-primary focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-white text-slate-900" />
                     </td>
                     <td className="px-6 py-4 font-medium text-slate-900 dark:text-white">{item.name}</td>
                     <td className="px-6 py-4 text-slate-500 dark:text-slate-400">{item.email}</td>
@@ -126,7 +126,7 @@ export function DataTableDemo() {
           </table>
         </div>
 
-        <div className="flex items-center justify-between border-t border-slate-200 px-6 py-3 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
+        <div className="flex items-center justify-between border-t border-slate-200 px-6 py-3 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 dark:text-white text-slate-900">
           <p className="text-sm text-slate-500 dark:text-slate-400">
             Showing <span className="font-medium text-slate-900 dark:text-white">{filteredData.length > 0 ? 1 : 0}</span> to <span className="font-medium text-slate-900 dark:text-white">{filteredData.length}</span> of <span className="font-medium text-slate-900 dark:text-white">{filteredData.length}</span> results
           </p>

@@ -8,7 +8,7 @@ function MasterDataLayout({ title, description, columns, data = [] }) {
       hasData={data.length > 0}
       table={
         <table className="w-full whitespace-nowrap text-left text-sm">
-          <thead className="bg-slate-50 dark:bg-slate-900/50">
+          <thead className="bg-slate-50 dark:bg-slate-900/50 dark:text-white text-slate-900">
             <tr>
               {columns.map(c => <th key={c.key} className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">{c.label}</th>)}
             </tr>

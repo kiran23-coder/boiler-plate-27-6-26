@@ -9,8 +9,13 @@ import { MockChart } from '@/components/ui/MockChart';
 export function Sessions() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  
+  const [formData, setFormData] = useState({
+    c1: '', c2: '', c3: '', c4: '', c5: '', c6: '', c7: 'Just now', c8: 'Active'
+  });
 
-  const data = [
+  const [data, setData] = useState([
   {
     "id": 1,
     "c1": "Alice Freeman",
@@ -99,7 +104,36 @@ export function Sessions() {
     "c7": "Yesterday",
     "c8": "Expired"
   }
-];
+  ]);
+
+  const handleOpenDrawer = (row = null) => {
+    if (row) {
+      setEditingId(row.id);
+      setFormData(row);
+    } else {
+      setEditingId(null);
+      setFormData({ c1: '', c2: '', c3: '', c4: '', c5: '', c6: '', c7: 'Just now', c8: 'Active' });
+    }
+    setIsDrawerOpen(true);
+  };
+
+  const handleSave = () => {
+    if (editingId) {
+      setData(data.map(d => d.id === editingId ? { ...formData, id: editingId } : d));
+    } else {
+      setData([{ ...formData, id: Date.now() }, ...data]);
+    }
+    setIsDrawerOpen(false);
+  };
+
+  const handleDelete = (id) => {
+    setData(data.filter(d => d.id !== id));
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
   const filteredData = data.filter(item => 
     Object.values(item).some(val => 
@@ -113,7 +147,7 @@ export function Sessions() {
       title="Active Sessions"
       description="Monitor and terminate active user sessions."
       toolbarActions={
-        <Button onClick={() => setIsDrawerOpen(true)}>
+        <Button onClick={() => handleOpenDrawer()}>
           <Plus className="mr-2 h-4 w-4" /> Add New
         </Button>
       }
@@ -125,7 +159,7 @@ export function Sessions() {
       hasData={filteredData.length > 0}
       table={
         <table className="w-full whitespace-nowrap text-left text-sm">
-          <thead className="bg-slate-50 dark:bg-slate-900/50">
+          <thead className="bg-slate-50 dark:bg-slate-900/50 dark:text-white text-slate-900">
             <tr>
               <th className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">User</th>
               <th className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">Browser</th>
@@ -146,23 +180,25 @@ export function Sessions() {
                 <td className="px-6 py-4 text-slate-500 dark:text-slate-400">{row.c3}</td>
                 <td className="px-6 py-4 text-slate-500 dark:text-slate-400">{row.c4}</td>
                 <td className="px-6 py-4 text-slate-500 dark:text-slate-400">{row.c5}</td>
+                <td className="px-6 py-4 text-slate-500 dark:text-slate-400">{row.c6}</td>
+                <td className="px-6 py-4 text-slate-500 dark:text-slate-400">{row.c7}</td>
                 <td className="px-6 py-4">
                   <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                    row.c6 === 'Active' || row.c6 === 'Success' || row.c6 === 'Trusted' || row.c6 === 'Indexed' || row.c6 === 'Published'
+                    row.c8 === 'Active' || row.c8 === 'Success' || row.c8 === 'Trusted' || row.c8 === 'Indexed' || row.c8 === 'Published'
                       ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
-                      : row.c6 === 'Expired' || row.c6 === 'Failed' || row.c6 === 'Blocked' || row.c6 === 'Suspended' 
+                      : row.c8 === 'Expired' || row.c8 === 'Failed' || row.c8 === 'Blocked' || row.c8 === 'Suspended' 
                       ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
                       : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
                   }`}>
-                    {row.c6}
+                    {row.c8}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end space-x-2">
-                    <button onClick={() => setIsDrawerOpen(true)} className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors">
+                    <button onClick={() => handleOpenDrawer(row)} className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors">
                       <Edit className="h-4 w-4" />
                     </button>
-                    <button className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-red-500 dark:hover:bg-slate-800 transition-colors">
+                    <button onClick={() => handleDelete(row.id)} className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-red-500 dark:hover:bg-slate-800 transition-colors">
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
@@ -174,31 +210,74 @@ export function Sessions() {
       }
     >
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 mb-6">
-  <StatCard title="Active Sessions" value="1,204" icon="Monitor" trend="+24" color="green" />
-  <StatCard title="Expired Sessions" value="8,432" icon="Clock" trend="+120" color="blue" />
-  <StatCard title="Blocked Sessions" value="12" icon="Ban" trend="-2" color="red" />
-</div>
+        <StatCard title="Active Sessions" value={data.filter(d => d.c8 === 'Active').length.toString()} icon="Monitor" trend={`out of ${data.length} total`} color="green" />
+        <StatCard title="Expired Sessions" value={data.filter(d => d.c8 === 'Expired').length.toString()} icon="Clock" trend="requires re-login" color="blue" />
+        <StatCard title="Blocked Sessions" value={data.filter(d => d.c8 === 'Blocked').length.toString()} icon="Ban" trend="security flagged" color="red" />
+      </div>
     </UniversalCRUDLayout>
-      <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} title="Add/Edit Active Sessions">
+      <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} title={editingId ? "Edit Session" : "Add Session"}>
         <div className="space-y-4 mt-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Name</label>
-            <input type="text" className="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" placeholder="Enter name..." />
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">User</label>
+            <select name="c1" value={formData.c1} onChange={handleChange} className="block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700">
+              <option value="">Select a User...</option>
+              <option value="Alice Freeman">Alice Freeman</option>
+              <option value="Bob Smith">Bob Smith</option>
+              <option value="Charlie Davis">Charlie Davis</option>
+              <option value="Diana Prince">Diana Prince</option>
+              <option value="Evan Wright">Evan Wright</option>
+              <option value="Fiona Gallagher">Fiona Gallagher</option>
+              <option value="George Miller">George Miller</option>
+              <option value="Hannah Abbott">Hannah Abbott</option>
+            </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Description</label>
-            <textarea className="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" rows="3" placeholder="Enter details..."></textarea>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Browser</label>
+            <input name="c2" value={formData.c2} onChange={handleChange} type="text" className="block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" placeholder="e.g. Chrome 120" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Status</label>
-            <select className="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">OS</label>
+            <select name="c3" value={formData.c3} onChange={handleChange} className="block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700">
+              <option value="">Select OS...</option>
+              <option value="Windows 11">Windows 11</option>
+              <option value="Windows 10">Windows 10</option>
+              <option value="macOS 14">macOS 14</option>
+              <option value="macOS 13">macOS 13</option>
+              <option value="Linux">Linux</option>
+              <option value="Ubuntu 22.04">Ubuntu 22.04</option>
+              <option value="iOS 17">iOS 17</option>
+              <option value="Android 14">Android 14</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Device</label>
+            <select name="c4" value={formData.c4} onChange={handleChange} className="block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700">
+              <option value="">Select Device...</option>
+              <option value="Desktop">Desktop</option>
+              <option value="Laptop">Laptop</option>
+              <option value="Mobile">Mobile</option>
+              <option value="Tablet">Tablet</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">IP Address</label>
+            <input name="c5" value={formData.c5} onChange={handleChange} type="text" className="block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" placeholder="e.g. 192.168.1.1" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Location</label>
+            <input name="c6" value={formData.c6} onChange={handleChange} type="text" className="block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" placeholder="e.g. New York, US" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Status</label>
+            <select name="c8" value={formData.c8} onChange={handleChange} className="block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700">
               <option>Active</option>
-              <option>Inactive</option>
+              <option>Expired</option>
+              <option>Blocked</option>
             </select>
           </div>
           <div className="pt-4 flex justify-end space-x-2">
             <Button variant="outline" onClick={() => setIsDrawerOpen(false)}>Cancel</Button>
-            <Button onClick={() => setIsDrawerOpen(false)}>Save Changes</Button>
+            <Button onClick={handleSave}>Save Changes</Button>
           </div>
         </div>
       </Drawer>

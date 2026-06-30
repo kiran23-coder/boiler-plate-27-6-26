@@ -34,7 +34,7 @@ export function ErrorLogs() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full whitespace-nowrap text-left text-sm">
-              <thead className="bg-slate-50 dark:bg-slate-900/50">
+              <thead className="bg-slate-50 dark:bg-slate-900/50 dark:text-white text-slate-900">
                 <tr>
                   <th className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">Time</th>
                   <th className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">Module</th>

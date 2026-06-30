@@ -29,19 +29,18 @@ export function MediaLibrary() {
   // Search state
   const [searchQuery, setSearchQuery] = useState("")
 
-  const fetchFiles = (parentId = null) => {
-    if (!parentId) {
-      setFiles([
-        { id: 'root1', name: 'Marketing', type: 'folder', isFolder: true, parentId: null, createdAt: new Date().toISOString() },
-        { id: 'root2', name: 'banner.png', type: 'image/png', size: 1024000, isFolder: false, parentId: null, createdAt: new Date().toISOString() }
-      ]);
-    }
-    setIsLoading(false);
-  }
-
   useEffect(() => {
-    fetchFiles(currentFolder?.id)
-  }, [currentFolder])
+    // Initialize with some dummy data including nested files
+    setFiles([
+      { id: 'root1', name: 'Marketing', type: 'folder', isFolder: true, parentId: null, createdAt: new Date().toISOString() },
+      { id: 'root2', name: 'banner.png', type: 'image/png', size: 1024000, isFolder: false, parentId: null, createdAt: new Date().toISOString() },
+      { id: 'root3', name: 'ssssss', type: 'folder', isFolder: true, parentId: null, createdAt: new Date().toISOString() },
+      { id: 'root4', name: 'resume 9.pdf', type: 'application/pdf', size: 304128, isFolder: false, parentId: null, createdAt: new Date().toISOString() },
+      { id: 'sub1', name: 'campaign.pdf', type: 'application/pdf', size: 512000, isFolder: false, parentId: 'root1', createdAt: new Date().toISOString() },
+      { id: 'sub2', name: 'social-post.png', type: 'image/png', size: 204800, isFolder: false, parentId: 'root1', createdAt: new Date().toISOString() }
+    ]);
+    setIsLoading(false);
+  }, [])
 
   const handleUpload = (e) => {
     e.preventDefault();
@@ -124,8 +123,9 @@ export function MediaLibrary() {
     return <FileText className="h-12 w-12 mb-3 text-red-500" />;
   }
 
-  // Filter files based on search query
+  // Filter files based on current folder and search query
   const filteredFiles = files.filter(file => 
+    file.parentId === (currentFolder ? currentFolder.id : null) &&
     file.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -153,7 +153,7 @@ export function MediaLibrary() {
       <div className="flex-1 flex flex-col min-h-0 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950">
         
         {/* Breadcrumb Navigation */}
-        <div className="flex items-center px-6 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
+        <div className="flex items-center px-6 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 dark:text-white text-slate-900">
           <button 
             onClick={() => navigateToBreadcrumb(-1)}
             className="flex items-center text-sm font-medium text-slate-500 hover:text-primary dark:text-slate-400"
@@ -189,7 +189,7 @@ export function MediaLibrary() {
               placeholder="Search files and folders..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-10 w-full rounded-md border border-slate-300 bg-white pl-10 pr-4 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+              className="h-10 w-full rounded-md border border-slate-300 bg-white pl-10 pr-4 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-white text-slate-900"
             />
           </div>
           <div className="flex items-center space-x-2 border rounded-md border-slate-200 p-1 dark:border-slate-700">
@@ -206,7 +206,7 @@ export function MediaLibrary() {
           {isLoading ? (
             <div className="text-center text-slate-500 py-12">Loading files...</div>
           ) : filteredFiles.length === 0 ? (
-             <div className="flex flex-col items-center justify-center text-slate-500 py-16 border rounded-xl border-dashed border-slate-300 bg-slate-50/50 dark:border-slate-700 dark:bg-slate-900/20">
+             <div className="flex flex-col items-center justify-center text-slate-500 py-16 border rounded-xl border-dashed border-slate-300 bg-slate-50/50 dark:border-slate-700 dark:bg-slate-900/20 dark:text-white">
                <Folder className="h-12 w-12 text-slate-300 mb-4 dark:text-slate-600" />
                <p className="text-lg font-medium text-slate-900 dark:text-white mb-1">
                  {searchQuery ? 'No matching files found' : (currentFolder ? 'This folder is empty' : 'No files found')}
@@ -235,6 +235,8 @@ export function MediaLibrary() {
                       navigateToFolder(file)
                     } else if (file.url) {
                       window.open(`http://localhost:5000${file.url}`, '_blank')
+                    } else {
+                      addToast(`Opening ${file.name}... (Preview only available with backend)`);
                     }
                   }}
                   className="group relative flex flex-col items-center justify-center rounded-xl border border-slate-200 bg-white p-4 text-center hover:border-primary/50 hover:shadow-md dark:border-slate-800 dark:bg-slate-950 dark:hover:border-primary/50 transition-all cursor-pointer"
@@ -315,7 +317,7 @@ export function MediaLibrary() {
               value={folderName} 
               onChange={(e) => setFolderName(e.target.value)} 
               placeholder="e.g. Invoices 2024" 
-              className="w-full h-10 px-3 rounded-md border border-slate-300 bg-white text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-white" 
+              className="w-full h-10 px-3 rounded-md border border-slate-300 bg-white text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-white text-slate-900" 
             />
             {currentFolder && (
               <p className="mt-2 text-xs text-slate-500">Creating in: <span className="font-medium">{currentFolder.name}</span></p>
@@ -339,7 +341,7 @@ export function MediaLibrary() {
               required 
               value={renameName} 
               onChange={(e) => setRenameName(e.target.value)} 
-              className="w-full h-10 px-3 rounded-md border border-slate-300 bg-white text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-white" 
+              className="w-full h-10 px-3 rounded-md border border-slate-300 bg-white text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-white text-slate-900" 
             />
           </div>
           <div className="mt-6 flex justify-end space-x-3 border-t border-slate-100 dark:border-slate-800 pt-4">

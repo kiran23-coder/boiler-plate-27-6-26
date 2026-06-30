@@ -64,14 +64,14 @@ export function UniversalCRUDLayout({
               placeholder={searchProps.placeholder || "Search..."}
               value={searchProps.value}
               onChange={searchProps.onChange}
-              className="h-10 w-full rounded-md border border-slate-300 bg-white pl-10 pr-4 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+              className="h-10 w-full rounded-md border border-slate-300 bg-white pl-10 pr-4 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-slate-700 dark:bg-slate-900 dark:text-white text-slate-900"
             />
           </div>
         </div>
 
         {/* Filters section */}
         {showFilters && filters && (
-          <div className="border-b border-slate-200 px-6 py-4 bg-slate-50 dark:border-slate-800 dark:bg-slate-900/50">
+          <div className="border-b border-slate-200 px-6 py-4 bg-slate-50 dark:border-slate-800 dark:bg-slate-900/50 dark:text-white text-slate-900">
             {filters}
           </div>
         )}

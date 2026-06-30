@@ -68,16 +68,11 @@ export function APIKeys() {
   );
 
   return (
-    <>
     <UniversalCRUDLayout
       title="API Keys"
       description="Manage programmatic access tokens for developers."
       toolbarActions={
-<<<<<<< HEAD
         <Button onClick={() => handleOpenModal()}>
-=======
-        <Button onClick={() => setIsDrawerOpen(true)}>
->>>>>>> 7cbe9b095e3ac79adee145ea661bf0a1940d29c6
           <Plus className="mr-2 h-4 w-4" /> Add New
         </Button>
       }
@@ -89,7 +84,7 @@ export function APIKeys() {
       hasData={filteredData.length > 0}
       table={
         <table className="w-full whitespace-nowrap text-left text-sm">
-          <thead className="bg-slate-50 dark:bg-slate-900/50">
+          <thead className="bg-slate-50 dark:bg-slate-900/50 dark:text-white text-slate-900">
             <tr>
               <th className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">Key Name</th>
               <th className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">Prefix</th>
@@ -121,14 +116,10 @@ export function APIKeys() {
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end space-x-2">
-<<<<<<< HEAD
                     <button 
                       onClick={() => handleOpenModal(row)}
                       className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors"
                     >
-=======
-                    <button onClick={() => setIsDrawerOpen(true)} className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors">
->>>>>>> 7cbe9b095e3ac79adee145ea661bf0a1940d29c6
                       <Edit className="h-4 w-4" />
                     </button>
                     <button 
@@ -146,17 +137,11 @@ export function APIKeys() {
       }
     >
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
-<<<<<<< HEAD
         <StatCard title="Active Keys" value={keys.length.toString()} icon="Key" trend="+12" color="blue" />
-=======
-        <StatCard title="Active Keys" value="145" icon="Key" trend="+12" color="blue" />
->>>>>>> 7cbe9b095e3ac79adee145ea661bf0a1940d29c6
         <StatCard title="Requests (30d)" value="14.5M" icon="Activity" trend="+1.2M" color="green" />
         <StatCard title="Rate Limited" value="4,500" icon="AlertTriangle" trend="+450" color="orange" />
         <StatCard title="API Errors" value="12" icon="XCircle" trend="-2" color="red" />
       </div>
-<<<<<<< HEAD
-
       <Modal isOpen={isModalOpen} onClose={handleCloseModal} title={editingKey ? "Edit API Key" : "Add New API Key"}>
         <div className="space-y-4">
           <div>
@@ -165,7 +150,7 @@ export function APIKeys() {
               name="c1"
               value={formData.c1}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 dark:text-white dark:border-slate-700 dark:bg-slate-900"
               placeholder="e.g. Prod Backend Service"
             />
           </div>
@@ -175,11 +160,25 @@ export function APIKeys() {
               name="c3"
               value={formData.c3}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 dark:text-white dark:border-slate-700 dark:bg-slate-900"
             >
               <option value="Production">Production</option>
               <option value="Staging">Staging</option>
               <option value="Development">Development</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Tenant (Client)</label>
+            <select 
+              name="tenant"
+              value={formData.tenant || ''}
+              onChange={handleChange}
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 dark:text-white dark:border-slate-700 dark:bg-slate-900"
+            >
+              <option value="">Select Tenant...</option>
+              <option value="Acme Corp">Acme Corp</option>
+              <option value="Stark Ind.">Stark Ind.</option>
+              <option value="Wayne Ent.">Wayne Ent.</option>
             </select>
           </div>
           <div>
@@ -188,7 +187,7 @@ export function APIKeys() {
               name="c4"
               value={formData.c4}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 dark:text-white dark:border-slate-700 dark:bg-slate-900"
             >
               <option value="Read Only">Read Only</option>
               <option value="Read / Write">Read / Write</option>
@@ -202,7 +201,7 @@ export function APIKeys() {
               name="c6"
               value={formData.c6}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 dark:text-white dark:border-slate-700 dark:bg-slate-900"
             >
               <option value="Active">Active</option>
               <option value="Revoked">Revoked</option>
@@ -214,52 +213,6 @@ export function APIKeys() {
           </div>
         </div>
       </Modal>
-=======
->>>>>>> 7cbe9b095e3ac79adee145ea661bf0a1940d29c6
     </UniversalCRUDLayout>
-      <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} title="Generate New API Key">
-        <div className="space-y-4 mt-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Key Name</label>
-            <input type="text" className="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700" placeholder="e.g. Production Payments Integration" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Expiration</label>
-            <select className="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:text-white dark:ring-slate-700">
-              <option>30 days</option>
-              <option>60 days</option>
-              <option>90 days</option>
-              <option>1 year</option>
-              <option>Never expire (Not recommended)</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">API Scopes</label>
-            <div className="mt-2 space-y-2">
-              <div className="flex items-center">
-                <input type="checkbox" className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary" defaultChecked />
-                <label className="ml-2 text-sm text-slate-700 dark:text-slate-300">Read access (users, reports, logs)</label>
-              </div>
-              <div className="flex items-center">
-                <input type="checkbox" className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary" defaultChecked />
-                <label className="ml-2 text-sm text-slate-700 dark:text-slate-300">Write access (create, update)</label>
-              </div>
-              <div className="flex items-center">
-                <input type="checkbox" className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary" />
-                <label className="ml-2 text-sm text-slate-700 dark:text-slate-300">Delete access (destructive actions)</label>
-              </div>
-              <div className="flex items-center">
-                <input type="checkbox" className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary" />
-                <label className="ml-2 text-sm text-slate-700 dark:text-slate-300">Billing access (view invoices, manage plans)</label>
-              </div>
-            </div>
-          </div>
-          <div className="pt-4 flex justify-end space-x-2">
-            <Button variant="outline" onClick={() => setIsDrawerOpen(false)}>Cancel</Button>
-            <Button onClick={() => setIsDrawerOpen(false)}>Generate Key</Button>
-          </div>
-        </div>
-      </Drawer>
-    </>
   );
 }

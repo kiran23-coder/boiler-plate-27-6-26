@@ -11,10 +11,29 @@ import {
   ShieldCheck,
   Plus
 } from 'lucide-react'
+import { navigation } from '../layout/Sidebar'
 
 export function CommandPalette() {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
+
+  const getAllNavItems = () => {
+    const items = [];
+    navigation.forEach(item => {
+      if (item.children) {
+        item.children.forEach(child => {
+          items.push({ name: child.name, href: child.href, icon: item.icon, parent: item.name });
+        });
+      } else {
+        if (item.href) {
+          items.push({ name: item.name, href: item.href, icon: item.icon });
+        }
+      }
+    });
+    return items;
+  }
+  
+  const navItems = getAllNavItems();
 
   useEffect(() => {
     const down = (e) => {
@@ -54,47 +73,32 @@ export function CommandPalette() {
             </Command.Empty>
 
             <Command.Group heading="Navigation" className="px-2 py-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">
-              <Command.Item 
-                onSelect={() => runCommand(() => navigate('/dashboard'))}
-                className="flex cursor-pointer items-center rounded-md px-2 py-2 text-sm text-slate-700 aria-selected:bg-slate-100 aria-selected:text-slate-900 dark:text-slate-300 dark:aria-selected:bg-slate-800 dark:aria-selected:text-white"
-              >
-                <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
-              </Command.Item>
-              <Command.Item 
-                onSelect={() => runCommand(() => navigate('/users'))}
-                className="flex cursor-pointer items-center rounded-md px-2 py-2 text-sm text-slate-700 aria-selected:bg-slate-100 aria-selected:text-slate-900 dark:text-slate-300 dark:aria-selected:bg-slate-800 dark:aria-selected:text-white"
-              >
-                <Users className="mr-2 h-4 w-4" /> Users
-              </Command.Item>
-              <Command.Item 
-                onSelect={() => runCommand(() => navigate('/settings'))}
-                className="flex cursor-pointer items-center rounded-md px-2 py-2 text-sm text-slate-700 aria-selected:bg-slate-100 aria-selected:text-slate-900 dark:text-slate-300 dark:aria-selected:bg-slate-800 dark:aria-selected:text-white"
-              >
-                <Settings className="mr-2 h-4 w-4" /> Settings
-              </Command.Item>
-              <Command.Item 
-                onSelect={() => runCommand(() => navigate('/billing'))}
-                className="flex cursor-pointer items-center rounded-md px-2 py-2 text-sm text-slate-700 aria-selected:bg-slate-100 aria-selected:text-slate-900 dark:text-slate-300 dark:aria-selected:bg-slate-800 dark:aria-selected:text-white"
-              >
-                <CreditCard className="mr-2 h-4 w-4" /> Billing
-              </Command.Item>
+              {navItems.map((item, idx) => (
+                <Command.Item 
+                  key={idx}
+                  onSelect={() => runCommand(() => navigate(item.href))}
+                  className="flex cursor-pointer items-center rounded-md px-2 py-2 text-sm text-slate-700 aria-selected:bg-slate-100 aria-selected:text-slate-900 dark:text-slate-300 dark:aria-selected:bg-slate-800 dark:aria-selected:text-white"
+                >
+                  {item.icon && <item.icon className="mr-2 h-4 w-4" />} {item.parent ? `${item.parent} > ` : ''}{item.name}
+                </Command.Item>
+              ))}
             </Command.Group>
             
             <Command.Group heading="Quick Actions" className="mt-2 px-2 py-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">
               <Command.Item 
-                onSelect={() => runCommand(() => console.log('Create User'))}
+                onSelect={() => runCommand(() => navigate('/access/users'))}
                 className="flex cursor-pointer items-center rounded-md px-2 py-2 text-sm text-slate-700 aria-selected:bg-slate-100 aria-selected:text-slate-900 dark:text-slate-300 dark:aria-selected:bg-slate-800 dark:aria-selected:text-white"
               >
                 <Plus className="mr-2 h-4 w-4" /> Create User
               </Command.Item>
               <Command.Item 
-                onSelect={() => runCommand(() => console.log('Create Company'))}
+                onSelect={() => runCommand(() => navigate('/multitenant/tenants'))}
                 className="flex cursor-pointer items-center rounded-md px-2 py-2 text-sm text-slate-700 aria-selected:bg-slate-100 aria-selected:text-slate-900 dark:text-slate-300 dark:aria-selected:bg-slate-800 dark:aria-selected:text-white"
               >
-                <Building2 className="mr-2 h-4 w-4" /> Create Company
+                <Building2 className="mr-2 h-4 w-4" /> Create Tenant
               </Command.Item>
               <Command.Item 
-                onSelect={() => runCommand(() => console.log('Create Role'))}
+                onSelect={() => runCommand(() => navigate('/access/roles'))}
                 className="flex cursor-pointer items-center rounded-md px-2 py-2 text-sm text-slate-700 aria-selected:bg-slate-100 aria-selected:text-slate-900 dark:text-slate-300 dark:aria-selected:bg-slate-800 dark:aria-selected:text-white"
               >
                 <ShieldCheck className="mr-2 h-4 w-4" /> Create Role

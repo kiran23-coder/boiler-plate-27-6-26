@@ -56,6 +56,48 @@ Sidebar Wireframe
 
 Sirf reusable modules.
 
+────────────────────────────
+## Step-by-Step Workflow (Super Admin Journey)
+
+Ye section explain karta hai ki **Kiaan Core** (SaaS Boilerplate) step-by-step kaise kaam karta hai jab ek Super Admin login karta hai.
+
+**Step 1: Super Admin Login (Identity)**
+- Super Admin `Authentication` page par apni details dalta hai.
+- Backend credentials verify karke JWT token aur 'Role Permissions' return karta hai.
+- `AuthContext` backend se aayi in permissions ko globally store karta hai.
+
+**Step 2: Dynamic Sidebar & UI Rendering**
+- Login ke baad system decide karta hai ki is user ko kya-kya dikhna chahiye.
+- `Sidebar.jsx` hardcoded roles ki jagah backend se aayi permissions read karta hai, aur sirf allowed menus (jaise Multi Tenant, Access Control, Settings) render karta hai.
+
+**Step 3: Multi-Tenant Setup (Base Framework)**
+- Super Admin **Multi Tenant > Tenants** par jata hai.
+- Ek naya Tenant (eg: "Acme Corp") create karta hai.
+- Us Tenant ke liye Custom Domains, aur UI Branding (Logos, Colors) set karta hai.
+
+**Step 4: Access Control Configuration**
+- **Access Control > Permissions**: Super admin system ke har module (View, Edit, Delete) ke granular rights banata hai.
+- **Access Control > Roles**: Fir ek "Role" (eg: Manager) banata hai aur usme Permissions add karta hai.
+- **Access Control > Users**: Naye users invite kiye jate hain, jinhe ek "Role" assign kiya jata hai. Isse "Users ➔ Roles ➔ Permissions" ka strict flow maintain hota hai.
+
+**Step 5: Organization Structure Setup**
+- **Organization > Branches**: Tenant ke alag-alag Branches banaye jate hain.
+- **Organization > Departments**: Branches ke andar Departments (HR, IT, Sales) bante hain.
+- **Organization > Teams**: In Departments ke andar Teams banti hain, jisme Users ko daala jata hai.
+
+**Step 6: Subscription & Monetization**
+- SaaS platform ko monetize karne ke liye **Subscription > Plans** me alag-alag tiers (Free, Pro, Enterprise) banaye jate hain.
+- **Subscription > Features** me plan ki limitations set hoti hain.
+- Billing aur Invoices manage kiye jate hain.
+
+**Step 7: Universal Features (AI, Storage, Workflows)**
+- **AI Platform**: LLM Providers (OpenAI, Claude) connect hote hain.
+- **Workflow**: Auto-triggers banaye jate hain (eg: Jab naya user aaye, to welcome email bhejo).
+- **Storage / Notifications**: Files aur Emails centrally manage hote hain.
+
+*(Note: Is pure safar (workflow) me kisi bhi specific business logic jaise 'Patient', 'Lead', ya 'Student' ka zikr nahi hai. Ye sirf ek Engine hai jiske upar future SaaS apps plug hongi.)*
+────────────────────────────
+
 🏠 Dashboard
 
 ────────────────────────────

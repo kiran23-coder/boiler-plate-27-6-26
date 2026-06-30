@@ -72,11 +72,7 @@ export function SuperAdminDashboard() {
       title="Super Admin Dashboard"
       description="Global control center for the entire SaaS platform."
       toolbarActions={
-<<<<<<< HEAD
         <Button onClick={() => handleOpenModal()}>
-=======
-        <Button onClick={() => setIsDrawerOpen(true)}>
->>>>>>> 7cbe9b095e3ac79adee145ea661bf0a1940d29c6
           <Plus className="mr-2 h-4 w-4" /> Add New
         </Button>
       }
@@ -88,7 +84,7 @@ export function SuperAdminDashboard() {
       hasData={filteredData.length > 0}
       table={
         <table className="w-full whitespace-nowrap text-left text-sm">
-          <thead className="bg-slate-50 dark:bg-slate-900/50">
+          <thead className="bg-slate-50 dark:bg-slate-900/50 dark:text-white text-slate-900">
             <tr>
               <th className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">Tenant ID</th>
               <th className="px-6 py-4 font-semibold text-slate-900 dark:text-slate-200">Name</th>
@@ -120,14 +116,10 @@ export function SuperAdminDashboard() {
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end space-x-2">
-<<<<<<< HEAD
                     <button 
                       onClick={() => handleOpenModal(row)}
                       className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors"
                     >
-=======
-                    <button onClick={() => setIsDrawerOpen(true)} className="p-1 rounded-md text-slate-400 hover:bg-slate-100 hover:text-primary dark:hover:bg-slate-800 transition-colors">
->>>>>>> 7cbe9b095e3ac79adee145ea661bf0a1940d29c6
                       <Edit className="h-4 w-4" />
                     </button>
                     <button 
@@ -145,12 +137,12 @@ export function SuperAdminDashboard() {
       }
     >
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
-        <StatCard title="Total Tenants" value={tenants.length.toString()} icon="Database" trend="+12" color="blue" />
-        <StatCard title="Total Revenue (MRR)" value="$1.2M" icon="DollarSign" trend="+15%" color="green" />
-        <StatCard title="Active Subscriptions" value="12,450" icon="CreditCard" trend="+450" color="purple" />
-        <StatCard title="Open Support Tickets" value="45" icon="LifeBuoy" trend="-5" color="orange" />
-        <StatCard title="System Health" value="99.9%" icon="Activity" trend="Optimal" color="green" />
-        <StatCard title="Database Load" value="42%" icon="HardDrive" trend="Normal" color="blue" />
+        <StatCard title="Total Tenants" value={tenants.length.toString()} icon="Database" trend={`+${tenants.filter(t => t.c6 === 'Active').length} active`} color="blue" />
+        <StatCard title="Total Revenue (MRR)" value={`$${tenants.reduce((sum, t) => sum + parseInt(t.c4.replace(/[^0-9]/g, '') || 0), 0).toLocaleString()}`} icon="DollarSign" trend="monthly recurring" color="green" />
+        <StatCard title="Active Subscriptions" value={tenants.filter(t => t.c6 === 'Active').length.toString()} icon="CreditCard" trend="currently active" color="purple" />
+        <StatCard title="Suspended Tenants" value={tenants.filter(t => t.c6 === 'Suspended').length.toString()} icon="AlertTriangle" trend="needs review" color="orange" />
+        <StatCard title="System Health" value={tenants.filter(t => t.c5 === 'Critical').length > 0 ? "Warning" : "Optimal"} icon="Activity" trend={`${tenants.filter(t => t.c5 === 'Good').length} healthy`} color={tenants.filter(t => t.c5 === 'Critical').length > 0 ? "red" : "green"} />
+        <StatCard title="Enterprise Plans" value={tenants.filter(t => t.c3 === 'Enterprise').length.toString()} icon="Star" trend="highest tier" color="blue" />
       </div>
 
       <Modal isOpen={isModalOpen} onClose={handleCloseModal} title={editingTenant ? "Edit Tenant" : "Add New Tenant"}>
@@ -161,7 +153,7 @@ export function SuperAdminDashboard() {
               name="c1"
               value={formData.c1}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 dark:text-white dark:border-slate-700 dark:bg-slate-900"
               placeholder="e.g. tnt_101"
             />
           </div>
@@ -171,7 +163,7 @@ export function SuperAdminDashboard() {
               name="c2"
               value={formData.c2}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 dark:text-white dark:border-slate-700 dark:bg-slate-900"
               placeholder="e.g. Acme Corp"
             />
           </div>
@@ -181,7 +173,7 @@ export function SuperAdminDashboard() {
               name="c3"
               value={formData.c3}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 dark:text-white dark:border-slate-700 dark:bg-slate-900"
             >
               <option value="Startup">Startup</option>
               <option value="Pro">Pro</option>
@@ -194,7 +186,7 @@ export function SuperAdminDashboard() {
               name="c4"
               value={formData.c4}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 dark:text-white dark:border-slate-700 dark:bg-slate-900"
               placeholder="e.g. $49"
             />
           </div>
@@ -204,7 +196,7 @@ export function SuperAdminDashboard() {
               name="c5"
               value={formData.c5}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 dark:text-white dark:border-slate-700 dark:bg-slate-900"
             >
               <option value="Good">Good</option>
               <option value="Warning">Warning</option>
@@ -217,7 +209,7 @@ export function SuperAdminDashboard() {
               name="c6"
               value={formData.c6}
               onChange={handleChange}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 dark:text-white dark:border-slate-700 dark:bg-slate-900"
             >
               <option value="Active">Active</option>
               <option value="Suspended">Suspended</option>
